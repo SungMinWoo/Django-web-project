@@ -1,0 +1,76 @@
+{% extends 'mypage.html' %}
+
+{% block script %}
+{% load static %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
+<link rel="stylesheet" href="{% static 'css/leave_poty_style.css' %}">
+<link rel="stylesheet" href="{% static 'css/mypage_style.css' %}">
+<script type="text/javascript" src="{% static 'js/leave_poty.js' %}"></script>
+<script>
+
+
+</script>
+<style>
+    .current { /* 현재 페이지 */
+        font-weight: bold;
+        color:
+        {% if request.session.authUser.like == '진보' %}
+            #4543B8;
+        {% elif request.session.authUser.like == '보수' %}
+            #C55050;
+        {% else %}
+            #4B4B4B;
+        {% endif %}
+    }
+</style>
+
+{% endblock %}
+{% block mypage_content %}
+    <h5>회원탈퇴</h5>
+    <span style="font-size:10pt;">회원탈퇴에 앞서 아래 사항을 확인해주시기 바랍니다.</span>
+    <form method="POST" id="leave-poty">
+        {% csrf_token %}
+        <table class="table">
+            <tbody>
+                <tr>
+                    <th>재가입</th>
+                    <td>
+                        탈퇴 이후 같은 이메일로 <span class="red">30일간 재가입이 불가능</span>합니다.
+                    </td>
+                </tr>
+                <tr>
+                    <th>삭제</th>
+                    <td>
+                        회원탈퇴 이후 회원님이 작성하신 <span class="red">게시글을 제외한 모든 내용(댓글, 평가, 추천)이 삭제</span>됩니다.
+                    </td>
+                </tr>
+                <tr>
+                    <th>데이터 보관</th>
+                    <td>
+                        재가입 확인을 위해 <span class="red">30일간</span> 회원님의 이메일과 닉네임 아이디를 보관합니다.
+                        <br>
+                        불량회원의 경우 재가입 방지를 위해 개인정보 취급 방침에 따라 보관합니다.
+                        <br>
+                        회원님이 작성하신 게시글은 <span class="red">사이트 폐쇄까지 보관</span>합니다. 게시글 삭제를 원하실 경우 회원
+                        탈퇴 전 미리 삭제하시길바랍니다.
+                    </td>
+                </tr>
+                <tr>
+                    <th>비밀번호</th>
+                    <td>
+                        <input id="password" class="check" name="password" type="password" placeholder="현재 비밀번호">
+                        <img id="wrong_img_password" class="wrong_check_img" src="{% static 'media/no_check.png' %}" style="width:10pt; height:10pt;">
+                        <span id="message_password" class="error_message"></span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <fieldset>
+            <input id="agree-prov" type="checkbox" name="agreeProv" value="y">
+            <label for="agree-prov">위 사항을 모두 확인하여으며, 이에 동의합니다.</label>
+        </fieldset>
+        <input id="leave_submit" type="submit" value="회원탈퇴" check_result_password="fail">
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+{% block title %}- 정치인 리스트{% endblock %}
+{% block script %}
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/politic_list_style.css' %}">
+    <style>{% block btn_color %}{% endblock %}</style>
+{% endblock %}
+{% block content %}
+{% load mathfilters %}
+<div style="margin: 5pt;">
+    <div><h4><b>{% block info %} {% endblock %}</b></h4></div>
+    <div style="float:left">이미지를 클릭하면 상세정보 및 별점을 매길 수 있습니다.</div>
+    <form id="search_structure" method="post" style="float:right;">
+        {%csrf_token %}
+        <input id="search_box" name="keyword" type="search" placeholder="검색어를 입력하세요." aria-label="Search">
+        <button id="search_btn_img" type="submit" style="border:none; background-color:transparent;">
+            <img src="{% static 'media/search2.svg' %}" width="20" height="20">
+        </button>
+    </form>
+    {% if message %}
+        <br>
+        <div>{{message}}</div>
+    {% endif %}
+    <div id="main_politic_structure">
+        <div id="top_politic_structure">
+            <h5 style="float:left;">{% block position %} {% endblock %}</h5>
+        </div>
+        <br>
+        <div style="margin-left:15pt;">
+            {% if politic_list %}
+                {% for c in politic_list %}
+                            <div class="politic_img">
+                                <a href="{{ c.list.get_absolute_url }}">
+                                    <img src="https://poty.s3.ap-northeast-2.amazonaws.com/static/politic/{{ c.list.poli_nm }}.jpg" width="140" height="180">
+                                </a>
+                                <br>
+                                <div class="star-ratings">
+                                    <div class="star-ratings-fill space-x-2 text-lg" style="width:{% if not c.avg.rate__avg %}0{% else %}{{ c.avg.rate__avg | mul:20}}{% endif %}%">
+                                        <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
+                                    </div>
+                                    <div class="star-ratings-base space-x-2 text-lg">
+                                        <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
+                                    </div>
+                                </div>
+                                <a id="avg_rate">({% if not c.avg.rate__avg %}0.0{% else %}{{ c.avg.rate__avg }}{% endif %})</a>
+                                <br>
+                                    <div id="politic_nm">{{ c.list.poli_nm }}</div>
+                            </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+    </div>
+    <div id="pagination_structure">
+            <div class="pagination">
+                <div style="margin: 5px;">
+                {% if politic_list.has_previous %}
+                    <a class="abutton" href="?page=1">처음</a>
+                    <a class="abutton" href="?page={{ politic_list.previous_page_number }}">이전</a>
+                {% endif %}
+                </div>
+
+                <div style="margin: 5px;">
+                {% for page in politic_list.paginator.page_range %}
+                    {% if page >= politic_list.number|add:-2 and page <= politic_list.number|add:2 %}
+                    <span class="{% if page == politic_list.number %}current{% else %}base{% endif %}">
+                        <a href="?page={{ page }}" class="{% if page == politic_list.number %}current{% else %}base{% endif %}">{{ page }}</a>
+                    </span>
+                    {% elif page >= politic_list.number|add:-3 and page <= politic_list.number|add:3 %}
+                        ..
+                    {% endif %}
+                {% endfor %}
+                </div>
+
+                <div style="margin: 5px;">
+                {% if politic_list.has_next %}
+                    <a class="abutton" href="?page={{ politic_list.next_page_number }}">다음</a>
+                    <a class="abutton" href="?page={{ politic_list.paginator.num_pages }}">끝</a>
+                {% endif %}
+                </div>
+
+            </div>
+        </div>
+</div>
+{% endblock %}

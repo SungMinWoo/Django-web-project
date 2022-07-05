@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+{% block title %}- 게시글 업데이트{% endblock %}
+
+{% block color %}
+    {% if board_type|slice:2 == '여당' %}
+        #C55050;
+    {% elif board_type|slice:2 == '자유' %}
+        #4B4B4B;
+    {% else %}
+        #4543B8;
+    {% endif %}
+{% endblock %}
+
+{% block script %}
+
+<link href="https://cdn.jsdelivr.net/npm/summernote@0.8.15/dist/summernote-bs4.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.15/dist/summernote-bs4.min.js"></script>
+<script type="text/javascript" src="/static/js/lang/summernote-ko-KR.js"></script>
+<style>
+    #write_list li{
+        margin-bottom:20pt;
+        margin-left:-20pt;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+    <div style="margin:5pt;">
+        <h5>게시판 글쓰기</h5>
+        <div>저작권 등 다른 사람의 권리를 침해하거나 명예를 훼손하는 게시글은 관련 법률에 의해 제제를 받을 수 있습니다.</div>
+        <hr width="820px;" color="black" size="5">
+        <form action="" method="POST" style="margin-top:10pt;">
+            {% csrf_token %}
+            <ul style="list-style-type: none;" id="write_list">
+                <li>
+                    <label for="id_post_title" style="width:100pt;">제목</label>
+                    <input type="text" name="post_title" id="id_post_title" style="width:250pt;" value="{{ forms.post_title.value | safe }}" placeholder="게시글 제목">
+                </li>
+                <li>
+                    <label for="id_board_id" style="width:100pt;">게시판 종류</label>
+                    <input name="board_id" id="id_board_id" value="{{ board_type }}" style="border:none;" disabled>
+                </li>
+                <li>
+                    <label for="id_post_content">내용</label>
+                    {{ forms.post_content }}
+                </li>
+            </ul>
+            {% if error %}
+                {{ error }}
+            {% endif %}
+            <button type="submit">수정</button>
+            <input type="button" value="취소" onclick="history.go(-1)">
+        </form>
+    </div>
+{% endblock %}

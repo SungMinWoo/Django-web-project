@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+{% block title %}- 아이디/비밀번호 찾기{% endblock %}
+{% block color %}
+#4B4B4B;
+{% endblock %}
+{% block script %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/register_style.css' %}">
+<script type="text/javascript" src="{% static 'js/find-account.js' %}"></script>
+<style>
+    .check_img{
+        content:url('{% static 'media/check.png' %}');
+    }
+
+    .wrong_check_img{
+        content:url('{% static 'media/no_check.png' %}');
+    }
+</style>
+{% endblock %}
+{% block content %}
+{% if messages %}
+    {% for message in messages %}
+        <script type="text/javascript">
+            alert('{{ message }}');
+        </script>
+    {% endfor %}
+{% endif %}
+    <div class="row">
+        <div class="panel panel-default" style="">
+            <div class="alert alert" style="background-color:#EFDAF7; height:50pt;">ID/PW 찾기</div>
+            <table class="table">
+                <tbody>
+                    <tr>
+                        <th>ID 찾기</th>
+                        <td>
+                            <span>이메일 입력: </span>
+                            <input id="email" name="email" type="text" value="" class="check" placeholder="이메일을 입력해주세요.">
+                            <input class="btn btn-primary" id="search_id" type="button" value="ID 찾기" style="background-color:#6B049C; border:none; color:white;">
+                            <span id="message_email" class="error_message"></span>
+                            <br>
+                            <span style="font-size:10pt;">이메일로 아이디를 보내드립니다.</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>PW 찾기</th>
+                        <td>
+                            <span>아이디: </span>
+                            <input id="user_id" name="user_id" type="text" value="" class="check" placeholder="아이디를 입력해주세요.">
+                            <span id="message_user_id" class="error_message"></span>
+                            <br>
+                            <span style="font-size:10pt;">아이디는 4~12자 사이의 영문 소문자와 숫자만 가능합니다.</span>
+                            <br>
+                            <span>이메일 입력: </span>
+                            <input id="pw_email" name="email" type="text" value="" class="check" placeholder="이메일을 입력해주세요.">
+                            <input class="btn btn-primary" id="check_pw" type="button" value="PW 찾기" style="background-color:#6B049C; border:none; color:white;">
+                            <span id="message_pw_email" class="error_message"></span>
+                            <br>
+                            <input id="random_number" type="text" class="check" placeholder="번호를 입력해주세요." style="display:none;">
+                            <input class="btn btn-primary" id="check_number" type="button" value="인증번호 확인" style="display:none; background-color:#6B049C; border:none; color:white;">
+                            <div id="limit_time" style="display:none;"></div>
+                            <span id="pass_number" style="display:none;">이메일 인증이 완료되었습니다.</span>
+                            <span id="time_notice" class="guid_msg" style="display:none;">다시 인증번호를 생성하세요</span>
+                            <span id="message_number" class="error_message"></span>
+                        </td>
+                    </tr>
+                    <tr id="change_pw" style="display:none;">
+                        <th>비밀번호 변경</th>
+                        <td>
+                            <form id="change-form" method="post">
+                            {% csrf_token %}
+                                <input type="hidden" name="hidden_text" id="hidden_email">
+                                <input id="password1" class="check" name="password1" type="password" placeholder="새로운 비밀번호">
+                                <img id="img_password1" class="check_img" src="" style="display:none; width:10pt; height:10pt;">
+                                <img id="wrong_img_password1" class="wrong_check_img" src="" style="width:10pt; height:10pt;">
+                                <span id="message_pw1" class="error_message"></span>
+                                <div class="guid_msg">8~20자(영문, 숫자, 특수문자)로 이루어져야합니다.</div>
+
+                                <input id="password2" name="password2" type="password" placeholder="새로운 비밀번호 확인">
+                                <img id="img_password2" class="check_img" src="" style="display:none; width:10pt; height:10pt;">
+                                <img id="wrong_img_password2" class="wrong_check_img" src="" style="width:10pt; height:10pt;">
+                                <span id="message_pw2" class="error_message"></span>
+                                <input style="float:right; margin-right:5pt; background-color:#6B049C; border:none; color:white;" onclick="insert()" class="btn btn-primary" id="fix_info_submit" type="submit" value="비밀번호 변경하기"
+                                       check_result_password1="fail" check_result_password2="fail">
+                            </form>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}

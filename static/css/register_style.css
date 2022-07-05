@@ -1,0 +1,28 @@
+.check_img{
+    width:15px;
+    height:15px;
+    display:none;
+}
+
+.wrong_check_img{
+    width:15px;
+    height:15px;
+}
+
+.error_message{
+    font-size:10pt;
+}
+
+.necessary_val{
+    color:red;
+    text-decoration-line:none;
+}
+
+div.guid_msg{
+    font-size:10pt;
+}
+
+.tb{
+    position:relative;
+}
+

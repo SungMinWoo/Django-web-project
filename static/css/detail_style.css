@@ -1,0 +1,180 @@
+#total_ratings { /* 별점 */
+  color: #aaa9a9;
+  position: relative;
+<!--      float:left;-->
+  unicode-bidi: bidi-override;
+  width:max-content;
+  font-size:2.1em;
+  padding:0.0em;
+  margin-top:-10pt;
+  margin-left:5pt;
+  -webkit-text-fill-color: transparent; /* Will override color (regardless of order) */
+  -webkit-text-stroke-width: 0.5px;
+  -webkit-text-stroke-color: #2b2a29;
+}
+
+#total_ratings_fill {
+  color: #fff58c;
+  padding: 0.0em;
+  position: absolute;
+  z-index: 1;
+  display: flex;
+  top: 0;
+  left: 0;
+  overflow: hidden;
+  font-size:2.1rem;
+  -webkit-text-fill-color: gold;
+}
+
+#total_ratings_base {
+  z-index: 0;
+  padding: 0;
+}
+
+#politic_img_structure{
+    float:left;
+    margin-left:5pt;
+    width:140pt;
+    height:100%;
+}
+
+#politic_img{
+    margin-top:12pt;
+    border:solid 1px black;
+}
+
+#info_structure{
+    position:relative;
+    float:left;
+    margin-left:-10pt;
+}
+
+.info_ul{
+    float:left;
+    list-style:none;
+    height:100%;
+    margin-top:0pt;
+}
+
+.poli_info{
+    list-style:none;
+}
+
+.moretext span {
+    display: none;
+}
+
+#links {
+    display: block;
+}
+
+.poli_info_li{
+    margin-bottom:10px;
+}
+
+.poli_info_title{
+    float:left;
+    font-weight:bold
+}
+
+.poli_info_content{
+    margin-left:50pt;
+    max-width:100pt;
+}
+
+.poli_info_career{
+    margin-left:50pt;
+    max-width:220pt;
+    word-break:break-all;
+}
+
+.star-rating { /* 평점남기기 별점 */
+
+  display:flex;
+  flex-direction: row-reverse;
+  font-size:1.5em;
+  justify-content:space-around;
+  padding:0 .2em;
+  text-align:center;
+  width:5em;
+}
+
+.star-rating input {
+  display:none;
+}
+
+.star-rating label {
+  color:#ccc;
+  cursor:pointer;
+}
+
+.star-rating :checked ~ label {
+  color:#f90;
+}
+
+.star-rating label:hover,
+.star-rating label:hover ~ label {
+  color:#fc0;
+}
+
+#user_ratings { /* 유저평점 */
+  float:left;
+  color: #aaa9a9;
+  position: relative;
+  unicode-bidi: bidi-override;
+  width:max-content;
+  font-size:0.8em;
+  padding:0.2em;
+  -webkit-text-fill-color: transparent; /* Will override color (regardless of order) */
+  -webkit-text-stroke-width: 0.5px;
+  -webkit-text-stroke-color: #2b2a29;
+}
+
+#user_ratings_fill { /* 별점 */
+  color: #fff58c;
+  padding: 0.2em;
+  position: absolute;
+  z-index: 1;
+  display: flex;
+  top: 0;
+  left: 0;
+  overflow: hidden;
+  font-size:0.8rem;
+  -webkit-text-fill-color: gold;
+}
+
+#user_ratings_base {
+  z-index: 0;
+  padding: 0;
+}
+
+#pagination_structure{
+    position:relative;
+    display:flex;
+    text-align:center;
+    width:100%;
+}
+
+.pagination a {
+    text-decoration: none;
+    text-align: center;
+}
+
+.pagination { /* 페이지 버튼 */
+    position:relative;
+    text-align:center;
+    margin:0 auto;
+}
+
+.current { /* 현재 페이지 */
+    font-weight: bold;
+}
+
+.base{ /* 그 외 페이지 */
+    color:black;
+}
+
+.abutton { /* 버튼 기본 색 */
+    color: black;
+    font-size: small;
+}

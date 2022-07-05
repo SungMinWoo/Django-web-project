@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block title %}- 회원가입 완료{% endblock %}
+{% block color %}
+#4B4B4B;
+{% endblock %}
+{% block content %}
+    <div class="row">
+        <div class="panel panel-default" >
+            <div class="alert alert" style="background-color:#EFDAF7">{{ new_user.nickname }}님 회원가입이 완료되었습니다.</div>
+            <a class="btn btn" href="/" style="background-color:#4B4B4B; color:#FFFEFE">메인으로 이동</a>
+            <a class="btn btn" href="{% url 'accounts:login' %}" style="background-color:#6B049C; color:#FFFEFE">로그인하기</a>
+        </div>
+    </div>
+{% endblock %}

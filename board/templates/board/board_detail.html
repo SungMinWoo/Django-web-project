@@ -1,0 +1,523 @@
+{% extends 'base.html' %}
+
+{% block title %}- 게시글{% endblock %}
+
+{% block color %}
+    {% if detail.board_id|slice:2 == 'ru' %}
+        #C55050;
+    {% elif detail.board_id|slice:2 == 'op' %}
+        #4543B8;
+    {% else %}
+        #4B4B4B;
+    {% endif %}
+{% endblock %}
+
+{% block script %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/board_detail_style.css' %}">
+<script type="text/javascript" src="{% static 'js/board_detail.js' %}"></script>
+<style>
+    .current{
+         font-weight: bold;
+         color:
+         {% if detail.board_id|slice:2 == 'ru' %}
+              #C55050;
+         {% elif detail.board_id|slice:2 == 'op' %}
+              #4543B8;
+         {% else %}
+              #4B4B4B;
+         {% endif %}
+    }
+
+    .basic{
+        color:white;
+        {% if detail.board_id|slice:2 == 'ru' %}
+            background-color: #C55050;
+        {% elif detail.board_id|slice:2 == 'op' %}
+            background-color: #4543B8;
+        {% else %}
+            background-color: #4B4B4B;
+        {% endif %}
+        margin:2pt;
+    }
+
+    .reply_submit{
+        color:white;
+        {% if detail.board_id|slice:2 == 'ru' %}
+            background-color: #C55050;
+        {% elif detail.board_id|slice:2 == 'op' %}
+            background-color: #4543B8;
+        {% else %}
+            background-color: #4B4B4B;
+        {% endif %}
+    }
+
+
+
+</style>
+<script>
+    $(function(){
+        var board_type = '{{ detail.board_id | slice:2 }}';
+        var user_type = '{{ request.session.authUser.like }}';
+    //        댓글 권한 부여
+        if(user_type == false){
+            $('#reply_fieldset').prop('disabled', true);
+            $('#message-text').val('로그인 후 이용해주세요.');
+            $('#reportRModal').on('show.bs.modal', function (e) {e.preventDefault();});
+            $('#reportBModal').on('show.bs.modal', function (e) {e.preventDefault();});
+        }else if(board_type == 'op' && user_type == '보수' || board_type == 'op' && user_type == '중도'){
+            $('#reply_fieldset').prop('disabled', true);
+            $('#message-text').val('권한이 존재하지 않습니다.');
+            $('#reportRModal').on('show.bs.modal', function (e) {e.preventDefault();});
+            $('#reportBModal').on('show.bs.modal', function (e) {e.preventDefault();});
+        }else if(board_type == 'ru' && user_type == '진보' || board_type == 'ru' && user_type == '중도'){
+            $('#reply_fieldset').prop('disabled', true);
+            $('#message-text').val('권한이 존재하지 않습니다.');
+            $('#reportRModal').on('show.bs.modal', function (e) {e.preventDefault();});
+            $('#reportBModal').on('show.bs.modal', function (e) {e.preventDefault();});
+        }
+
+        function check_type(user_types){ // 권한 체크
+            if(user_types == false){
+                alert('로그인 후 이용해주세요.');
+                return false;
+            }else if(board_type == 'op' && user_types == '보수' || board_type == 'op' && user_types == '중도'){
+                alert('권한이 존재하지 않습니다.');
+                return false;
+            }else if(board_type == 'ru' && user_types == '진보' || board_type == 'ru' && user_types == '중도'){
+                alert('권한이 존재하지 않습니다.');
+                return false;
+            }
+        };
+
+        $('#rate_button').click(function(){ // 신고 버튼 권한 부여
+            check_type(user_type);
+        });
+
+
+        $('.re_reply').click(function(){
+            var value = $(this).attr('name');
+
+            if(check_type(user_type) == false){
+                return false;
+            };
+
+            if($('[name='+value+']').filter('#re_reply_form').css('display') == 'none'){ // 두번 클릭시 다시 사라짐
+                $('[name='+value+']').filter('#re_reply_form').css('display', '');
+            }else{
+                $('[name='+value+']').filter('#re_reply_form').css('display', 'none');;
+            }
+        });
+<!--        대댓글 보이기-->
+        $('.re_reply_show').click(function(){
+            var value = $(this).attr('name');
+
+            if($('[name='+value+']').filter('#re_reply_show').css('display') == 'none'){ // 두번 클릭시 다시 사라짐
+                $('[name='+value+']').filter('#re_reply_show').css('display', '');
+            }else{
+                $('[name='+value+']').filter('#re_reply_show').css('display', 'none');;
+            }
+        });
+
+    <!--    정렬 기준-->
+        var value = '{{ select }}'
+        if(value == 'new'){
+            $('#choice option:eq(0)').prop('selected', true);
+        }else if(value == 'most_like'){
+            $('#choice option:eq(1)').prop('selected', true);
+        }else if(value == 'most_dislike'){
+            $('#choice option:eq(2)').prop('selected', true);
+        }
+})
+</script>
+{% endblock %}
+{% block content %}
+<!-- 사용자 정의 필터-->
+{% load custom_filter %}
+{% load mathfilters %}
+    <div>
+        <h3>{{ board_type }}</h3>
+    </div>
+    {% if not request.GET.next %}
+    <button type="button" onclick="history.go(-1)" class="btn basic">뒤로가기</button>
+    {% else %}
+    <button type="button" onclick="location.href='{{ redirect }}'" class="btn basic">뒤로가기</button>
+    {% endif %}
+    <div id="top-structure">
+        <div style="height:100%;  margin:10pt;">
+            <div style="font-size: 15pt;">{{ detail.post_title }}</div>
+            <div style="font-size: 12pt; float:left;">{% if detail.post_writer.nickname %}{{ detail.post_writer.nickname }}{% else %}[탈퇴유저]{% endif %} | 작성일: {{ detail.post_create | date:'Y-m-d H:i' }}
+            {% if not detail.post_update %} {% else %}수정일: {{ detail.post_update | date:'Y-m-d H:i' }} {% endif %}</div>
+            <div style="font-size: 12pt; float:right;">추천수 {{ detail.post_like.count | sub:detail.post_dislike.count }} | 댓글수 {{ reply_count }} | 조회수 {{ detail.post_views }}</div>
+        </div>
+    </div>
+    <div style="margin:10pt; min-height:200pt; width:98%; word-break:break-all;">
+        {{ detail.post_content | safe }}
+    </div>
+    <div style="text-align:center;">
+            <input type="image" class="{{ detail.id }}" onclick="post_like(this.className)"
+                   src="
+                    {% if detail.board_id|slice:2 == 'ru' %}
+                        {% static 'media/red_up.png' %}
+                    {% elif detail.board_id|slice:2 == 'op' %}
+                        {% static 'media/blue_up.png' %}
+                    {% else %}
+                        {% static 'media/violet_up.png' %}
+                    {% endif %}
+                    "
+                   name="like" value="당선" width="75" height="75">
+            <span id="like_count" class="{{ detail.id }}"  style="position:absolute; margin-top:20pt;">{{ detail.post_like.count }}</span>
+            <input type="image" class="{{ detail.id }}" onclick="post_dislike(this.className)"
+                   src="
+                    {% if detail.board_id|slice:2 == 'ru' %}
+                        {% static 'media/blue_down.png' %}
+                    {% elif detail.board_id|slice:2 == 'op' %}
+                        {% static 'media/red_down.png' %}
+                    {% else %}
+                        {% static 'media/violet_down.png' %}
+                    {% endif %}
+                   "
+                   name="dislike" width="75" height="75" value="낙선" style="margin-left:10pt;">
+            <span id="dislike_count" class="{{ detail.id }}" style="position:absolute; margin-top:20pt;">{{ detail.post_dislike.count }}</span>
+    </div>
+    <div style="height:60pt; border-top:1px solid black; border-bottom:1px solid black;">
+        {% if writer %}
+            <a href="/board/board_detail/{{ detail.id }}/modify" style="float:right;"><input class="btn basic" type="button" value="수정"></a>
+            <a class="delete" href="/board/board_detail/{{ detail.id }}/delete" style="float:right;"><input class="btn basic" type="button" value="삭제"></a>
+        {% endif %}
+<!--        신고 기능-->
+        {% if detail.board_id|slice:2 == 'no' or request.session.authUser.nickname == detail.post_writer.nickname %}
+        {% else %}
+        <button type="button" class="btn basic" id="rate_button" data-bs-toggle="modal" data-bs-target="#reportBModal" style="float:right; color:white;"
+                        {% if not request.session.authUser %}disabled {% else %} {% endif %}>
+                  신고
+        </button>
+        {% endif %}
+        <div class="modal fade" id="reportBModal" tabindex="-1" aria-labelledby="reportBModalLabel" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered"  style="width:100%;">
+            <div class="modal-content">
+              <div class="" style="text-align: center;">
+                  <h3 style="">신고</h3>
+              </div>
+                <form method="POST">
+                    {% csrf_token %}
+                  <div class="modal-body">
+                      <div class="star-rating">
+                          <input type="radio" id="4" name="report_board" value="4" />
+                          <label for="4">허위사실 유포</label>
+                          <input type="radio" id="3" name="report_board" value="3" />
+                          <label for="3">음란물</label>
+                          <input type="radio" id="2" name="report_board" value="2" />
+                          <label for="2">저작권법 위반</label>
+                          <input type="radio" id="1" name="report_board" value="1" checked/>
+                          <label for="1">명예훼손</label>
+                      </div>
+                  </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+                <button type="submit" class="btn btn-primary">저장</button>
+              </div>
+                </form>
+            </div>
+          </div>
+        </div>
+    </div>
+<!--댓글부분-->
+    <div style="float:left;">댓글 {{ reply_count }}개</div>
+    <form id="choiceForm" method="post" style="float:left; margin-left:5pt;">
+        {% csrf_token %}
+        <select name="choice" id="choice">
+            <option value="new">최신순</option>
+            <option value="most_like">당선순</option>
+            <option value="most_dislike">낙선순</option>
+        </select>
+    </form>
+    {% if reply.number == 1 %}
+    {% if best_reply %}
+        <div id="best_reply" style="margin-top:25pt; padding:5pt; background-color:
+                            {% if detail.board_id|slice:2 == 'ru' %}
+                                #FDE7F2;
+                            {% elif detail.board_id|slice:2 == 'op' %}
+                                #E4EBFF;
+                            {% else %}
+                                #F4E5F5;
+                            {% endif %};">
+            <h5>당선 탑 3</h5>
+        {% for c in best_reply %}
+                <a style="font-weight:bold; color:
+                                        {% if detail.board_id|slice:2 == 'ru' %}
+                                            #C55050;
+                                        {% elif detail.board_id|slice:2 == 'op' %}
+                                            #4543B8;
+                                        {% else %}
+                                            purple;
+                                        {% endif %}">{{ forloop.counter }}.</a>
+                <a style="font-size:13pt;"><strong>{{ c.reply_writer.nickname }}</strong></a>
+                  <a style="font-size:11pt; margin-left:5pt;" id="create_date">{{ c.reply_create | date:'Y-m-d H:i' }}</a>
+                  {% if c.reply_update %}
+                    <a style="font-size:11pt; margin-left:5pt;" id="update_date">수정: {{ c.reply_update | date:'Y-m-d H:i' }}</a>
+                  {% else %}
+                  {% endif %}
+<!--                                  댓글 신고-->
+                  {% if c.reply_writer.nickname == request.session.authUser.nickname %}
+                  {% else %}
+                  <button type="button" class="btn btn" id="report_button" data-bs-toggle="modal" data-bs-target="#reportRModal" style="color:black; margin-top:-2pt;"
+                                    {% if not request.session.authUser %}disabled {% else %} {% endif %}>
+                              신고
+                  </button>
+                  {% endif %}
+                    <div class="modal fade" id="reportRModal" tabindex="-1" aria-labelledby="reportRModalLabel" aria-hidden="true">
+                      <div class="modal-dialog modal-dialog-centered"  style="width:100%;">
+                        <div class="modal-content">
+                          <div class="" style="text-align: center;">
+                              <h3 style="">신고</h3>
+                          </div>
+                            <form method="POST">
+                                {% csrf_token %}
+                              <div class="modal-body">
+                                  <input type="hidden" name="report_reply_id" value="{{ c.id }}">
+                                  <div class="star-rating">
+                                      <input type="radio" id="44" name="report_reply" value="4" />
+                                      <label for="44">허위사실 유포</label>
+                                      <input type="radio" id="33" name="report_reply" value="3" />
+                                      <label for="33">음란물</label>
+                                      <input type="radio" id="22" name="report_reply" value="2" />
+                                      <label for="22">저작권법 위반</label>
+                                      <input type="radio" id="11" name="report_reply" value="1" checked/>
+                                      <label for="11">명예훼손</label>
+                                  </div>
+                              </div>
+                          <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+                            <button type="submit" class="btn btn-primary">저장</button>
+                          </div>
+                            </form>
+                        </div>
+                      </div>
+                    </div>
+<!--                                  -->
+                  <input type="button" class="re_reply" name="{{ c.id }}" value="답글" style="font-size:11pt; border:none; background-color:transparent;">
+                  {% if c.reply_writer.nickname == request.session.authUser.nickname %}
+                    <a class="delete" href="/board/board_detail/{{ detail.id }}/reply_delete/{{ c.id }}" style="font-size:11pt; margin-left:5pt; text-decoration:none; color:black">| 삭제</a>
+                    <input type="button" class="update_reply" name="{{ c.id }}" value="|  수정" style="font-size:11pt; border:none; background-color:transparent;">
+                  {% endif %}
+                  <span id="reply_dislike_count" class="{{ c.id }}" style="float:right; margin-top:5pt;">{{ c.reply_dislike.count }}</span>
+                  <input type="image" class="{{ c.id }}" onclick="reply_dislike(this.className)" name="dislike"
+                         src="
+                            {% if detail.board_id|slice:2 == 'ru' %}
+                                {% static 'media/blue_down.png' %}
+                            {% elif detail.board_id|slice:2 == 'op' %}
+                                {% static 'media/red_down.png' %}
+                            {% else %}
+                                {% static 'media/violet_down.png' %}
+                            {% endif %}
+                           " width="35" height="35" style="float:right; margin-left:5pt;">
+                  <span id="reply_like_count" class="{{ c.id }}" style="float:right; margin-top:5pt;">{{ c.reply_like.count }}</span>
+                  <input type="image" class="{{ c.id }}" onclick="reply_like(this.className)" name="like"
+                         src="
+                            {% if detail.board_id|slice:2 == 'ru' %}
+                                {% static 'media/red_up.png' %}
+                            {% elif detail.board_id|slice:2 == 'op' %}
+                                {% static 'media/blue_up.png' %}
+                            {% else %}
+                                {% static 'media/violet_up.png' %}
+                            {% endif %}
+                        " width="35" height="35" style="float:right;">
+                  <br>
+                  <div class="reply_contents" name="{{ c.id }}" style="font-size:13pt; margin-top:3pt; margin-left:10pt;">{{ c.reply_contents }}</div>
+            {% endfor %}
+        </div>
+    {% endif %}
+    {% endif %}
+    <div id="rating" style="position:static; margin:10pt;">
+          <table class="table">
+                {% if reply %}
+                    {% for c in reply %}
+                        <tr>
+                              <td>
+                                  <a style="font-size:13pt;"><strong>{{ c.reply_writer.nickname }}</strong></a>
+                                  <a style="font-size:11pt; margin-left:5pt;" id="create_date">{{ c.reply_create | date:'Y-m-d H:i' }}</a>
+                                  {% if c.reply_update %}
+                                    <a style="font-size:11pt; margin-left:5pt;" id="update_date">수정: {{ c.reply_update | date:'Y-m-d H:i' }}</a>
+                                  {% else %}
+                                  {% endif %}
+<!--                                  댓글 신고-->
+                                  {% if c.reply_writer.nickname == request.session.authUser.nickname %}
+                                  {% else %}
+                                  <button type="button" class="btn btn" id="report_button" data-bs-toggle="modal" data-bs-target="#reportRModal" style="color:black; margin-top:-2pt;"
+                                                    {% if not request.session.authUser %}disabled {% else %} {% endif %}>
+                                              신고
+                                  </button>
+                                  {% endif %}
+                                    <div class="modal fade" id="reportRModal" tabindex="-1" aria-labelledby="reportRModalLabel" aria-hidden="true">
+                                      <div class="modal-dialog modal-dialog-centered"  style="width:100%;">
+                                        <div class="modal-content">
+                                          <div class="" style="text-align: center;">
+                                              <h3 style="">신고</h3>
+                                          </div>
+                                            <form method="POST">
+                                                {% csrf_token %}
+                                              <div class="modal-body">
+                                                  <input type="hidden" name="report_reply_id" value="{{ c.id }}">
+                                                  <div class="star-rating">
+                                                      <input type="radio" id="44" name="report_reply" value="4" />
+                                                      <label for="44">허위사실 유포</label>
+                                                      <input type="radio" id="33" name="report_reply" value="3" />
+                                                      <label for="33">음란물</label>
+                                                      <input type="radio" id="22" name="report_reply" value="2" />
+                                                      <label for="22">저작권법 위반</label>
+                                                      <input type="radio" id="11" name="report_reply" value="1" checked/>
+                                                      <label for="11">명예훼손</label>
+                                                  </div>
+                                              </div>
+                                          <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+                                            <button type="submit" class="btn btn-primary">저장</button>
+                                          </div>
+                                            </form>
+                                        </div>
+                                      </div>
+                                    </div>
+<!--                                  -->
+                                  <input type="button" class="re_reply" name="{{ c.id }}" value="답글" style="font-size:11pt; border:none; background-color:transparent;">
+                                  {% if c.reply_writer.nickname == request.session.authUser.nickname %}
+                                    <a class="delete" href="/board/board_detail/{{ detail.id }}/reply_delete/{{ c.id }}" style="font-size:11pt; margin-left:5pt; text-decoration:none; color:black">| 삭제</a>
+                                    <input type="button" class="update_reply" name="{{ c.id }}" value="|  수정" style="font-size:11pt; border:none; background-color:white;">
+                                  {% endif %}
+                                  <span id="reply_dislike_count" class="{{ c.id }}" style="float:right; margin-top:5pt;">{{ c.reply_dislike.count }}</span>
+                                  <input type="image" class="{{ c.id }}" onclick="reply_dislike(this.className)" name="dislike"
+                                         src="
+                                            {% if detail.board_id|slice:2 == 'ru' %}
+                                                {% static 'media/blue_down.png' %}
+                                            {% elif detail.board_id|slice:2 == 'op' %}
+                                                {% static 'media/red_down.png' %}
+                                            {% else %}
+                                                {% static 'media/violet_down.png' %}
+                                            {% endif %}
+                                           " width="35" height="35" style="float:right; margin-left:5pt;">
+                                  <span id="reply_like_count" class="{{ c.id }}" style="float:right; margin-top:5pt;">{{ c.reply_like.count }}</span>
+                                  <input type="image" class="{{ c.id }}" onclick="reply_like(this.className)" name="like"
+                                         src="
+                                            {% if detail.board_id|slice:2 == 'ru' %}
+                                                {% static 'media/red_up.png' %}
+                                            {% elif detail.board_id|slice:2 == 'op' %}
+                                                {% static 'media/blue_up.png' %}
+                                            {% else %}
+                                                {% static 'media/violet_up.png' %}
+                                            {% endif %}
+                                        " width="35" height="35" style="float:right;">
+                                  <br>
+                                  <div class="reply_contents" name="{{ c.id }}" style="font-size:13pt; margin-top:3pt;">{{ c.reply_contents }}</div>
+                                  {% if c.id in re_reply_list %}
+                                  <input type="button" class="re_reply_show" name="{{ c.id }}" value="답글 {% loopcount c.id re_reply_list %}개" style="font-size:11pt; border:none; background-color:white;">
+                                      {% for a in re_reply %}
+                                        {% if a.reply_parent.id == c.id %}
+                                          <div id="re_reply_show"  name="{{ c.id }}" style="margin-left:20pt; display:none;">
+                                                  <a style="font-size:13pt;"><strong>{{ a.reply_writer.nickname }}</strong></a>
+                                                  <a style="font-size:11pt; margin-left:5pt;" id="re_create_date">{{ a.reply_create | date:'Y-m-d H:i' }}</a>
+                                                  {% if a.reply_update %}
+                                                    <a style="font-size:11pt; margin-left:5pt;" id="re_update_date">수정: {{ a.reply_update | date:'Y-m-d H:i' }}</a>
+                                                  {% else %}
+                                                  {% endif %}
+                                                  <input type="button" class="re_reply" name="{{ c.id }}" value="답글" style="font-size:11pt; border:none; background-color:white;">
+                                                  {% if a.reply_writer.nickname == request.session.authUser.nickname %}
+                                                    <a class="delete" href="/board/board_detail/{{ detail.id }}/reply_delete/{{ a.id }}" style="font-size:11pt; margin-left:5pt; text-decoration:none; color:black">| 삭제</a>
+                                                    <input type="button" class="update_re_reply" name="{{ a.id }}" value="|  수정" style="font-size:11pt; border:none; background-color:white;">
+                                                  {% endif %}
+                                                  <span id="re_reply_dislike_count" class="{{ a.id }}" style="float:right; margin-top:5pt;">{{ a.reply_dislike.count }}</span>
+                                                  <input type="image" class="{{ a.id }}" onclick="re_reply_dislike(this.className)" name="dislike"
+                                                         src="
+                                                            {% if detail.board_id|slice:2 == 'ru' %}
+                                                                {% static 'media/blue_down.png' %}
+                                                            {% elif detail.board_id|slice:2 == 'op' %}
+                                                                {% static 'media/red_down.png' %}
+                                                            {% else %}
+                                                                {% static 'media/violet_down.png' %}
+                                                            {% endif %}
+                                                           " width="35" height="35" style="float:right; margin-left:5pt;">
+                                                  <span id="re_reply_like_count" class="{{ a.id }}" style="float:right; margin-top:5pt;">{{ a.reply_like.count }}</span>
+                                                  <input type="image" class="{{ a.id }}" onclick="re_reply_like(this.className)" name="like"
+                                                         src="
+                                                            {% if detail.board_id|slice:2 == 'ru' %}
+                                                                {% static 'media/red_up.png' %}
+                                                            {% elif detail.board_id|slice:2 == 'op' %}
+                                                                {% static 'media/blue_up.png' %}
+                                                            {% else %}
+                                                                {% static 'media/violet_up.png' %}
+                                                            {% endif %}
+                                                        " width="35" height="35" style="float:right;">
+                                                  <br>
+                                                  <div class="reply_contents" name="{{ a.id }}" style="font-size:13pt; margin-top:3pt;">{{ a.reply_contents }}</div>
+<!--                                              대댓글 업데이트-->
+                                              </div>
+                                                <form class="mb-3" id="update_re_reply_form" name="{{ a.id }}" action="/board/board_detail/{{ detail.id }}/reply_update/{{ a.id }}" method="POST" style="display:none;">
+                                                    {% csrf_token %}
+                                                        <textarea class="form-control" id="update_re_reply_textarea" name="{{ a.id }}" title="{{ a.id }}"></textarea>
+                                                        <input type="submit" class="reply_submit" value="등록" onclick="insert()">
+                                                      <span class="counter" title="{{ a.id }}">(0 / 최대 300자)</span>
+                                                </form>
+                                        {% endif %}
+                                    {% endfor %}
+                                  {% endif %}
+<!--                                  대댓글 폼-->
+                                  <form class="mb-3" id="re_reply_form" name="{{ c.id }}" method="POST" style="display:none;">
+                                        {% csrf_token %}
+                                            <textarea class="form-control" id="re_reply_textarea" name="re_reply_content" title="{{ c.id }}"></textarea>
+                                            <input type="hidden" value="{{ c.id }}" name="re_reply_id">
+                                            <input type="submit" class="reply_submit" value="등록" onclick="insert()">
+                                          <span class="counter" title="{{ c.id }}">(0 / 최대 300자)</span>
+                                  </form>
+<!--                                 댓글 수정 폼-->
+                                  <form class="mb-3" id="update_reply_form" name="{{ c.id }}" action="/board/board_detail/{{ detail.id }}/reply_update/{{ c.id }}" method="POST" style="display:none;">
+                                        {% csrf_token %}
+                                            <textarea class="form-control" id="update_reply_textarea" name="{{ c.id }}" title="{{ c.id }}"></textarea>
+                                            <input type="submit" class="reply_submit" value="등록" onclick="insert()">
+                                          <span class="counter" title="{{ c.id }}">(0 / 최대 300자)</span>
+                                  </form>
+                              </td>
+                        </tr>
+                    {% endfor %}
+              {% endif %}
+          </table>
+    </div>
+    {% if reply %}
+        <div id="pagination_structure">
+            <div class="pagination">
+                <div style="margin: 5px;">
+                {% if reply.has_previous %}
+                    <a class="abutton" href="?page=1&next={{ redirect }">처음</a>
+                    <a class="abutton" href="?page={{ reply.previous_page_number }}&next={{ redirect }">이전</a>
+                {% endif %}
+                </div>
+
+                <div style="margin: 5px;">
+                {% for page in reply.paginator.page_range %}
+                    {% if page >= reply.number|add:-2 and page <= reply.number|add:2 %}
+                    <span class="{% if page == reply.number %}current{% else %}base{% endif %}">
+                        <a href="?page={{ page }}&next={{ redirect }}" class="{% if page == reply.number %}current{% else %}base{% endif %}">{{ page }}</a>
+                    </span>
+                    {% elif page >= reply.number|add:-3 and page <= reply.number|add:3 %}
+                        ..
+                    {% endif %}
+                {% endfor %}
+                </div>
+
+                <div style="margin: 5px;">
+                {% if reply.has_next %}
+                    <a class="abutton" href="?page={{ reply.next_page_number }}&next={{ redirect }">다음</a>
+                    <a class="abutton" href="?page={{ reply.paginator.num_pages }}&next={{ redirect }">끝</a>
+                {% endif %}
+                </div>
+            </div>
+        </div>
+    {% endif %}
+    <form class="mb-3" action="" method="POST" style="">
+        {% csrf_token %}
+        <fieldset id="reply_fieldset">
+            <textarea class="form-control" id="message-text" name="reply_content" title="{{ detail.id }}"></textarea>
+            <input type="submit" class="reply_submit" value="등록" onclick="insert()">
+        </fieldset>
+          <span class="counter" title="{{ detail.id }}">(0 / 최대 300자)</span>
+    </form>
+
+{% endblock %}

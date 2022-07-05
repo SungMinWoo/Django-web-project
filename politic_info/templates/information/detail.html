@@ -1,0 +1,249 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}- 정치인 세부 정보{% endblock %}
+{% block color %}
+    {% if politic.party_af == '국민의힘' %}
+        #C55050;
+    {% else %}
+        #4543B8;
+    {% endif %}"
+{% endblock %}
+
+{% block script %}
+<script>
+    $(function(){
+        var value = '{{ select }}'
+        if(value == 'new'){
+            $('#choice option:eq(0)').prop('selected', true);
+        }else if(value == 'most_like'){
+            $('#choice option:eq(1)').prop('selected', true);
+        }else if(value == 'most_dislike'){
+            $('#choice option:eq(2)').prop('selected', true);
+        }
+    })
+</script>
+<style>
+    {% if politic.party_af == '국민의힘' %}
+       .current {
+            color: red;
+        }
+    {% else %}
+        .current {
+            color: blue;
+        }
+    {% endif %}
+</style>
+<link rel="stylesheet" href="{% static 'css/detail_style.css' %}">
+<script rel="text/javascript" src="{% static 'js/politic_detail.js' %}"></script>
+<script>
+
+</script>
+{% endblock %}
+{% block content %}
+{% load mathfilters %}
+    <div style="margin: 5px;">
+        <div><h4>야당 정치인 정보</h4></div>
+        <div style="float:left;">
+            <div id="politic_img_structure">
+                <div>
+                    <img src="https://poty.s3.ap-northeast-2.amazonaws.com/static/politic/{{ politic.poli_nm }}.jpg" width="180" height="220" id="politic_img">
+                </div>
+                <div class="star-ratings" id="total_ratings">
+                    <div class="star-ratings-fill space-x-2 text-lg" id="total_ratings_fill" style="width:{% if not avg.rate__avg %}0{% else %}{{ avg.rate__avg | mul:20}}{% endif %}%">
+                        <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
+                    </div>
+                    <div class="star-ratings-base space-x-2 text-lg" id="total_ratings_base">
+                        <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
+                    </div>
+                </div>
+                <div style="float:right; margin-right:3pt;">평점합계: <a id="politic_total_rate">{% if not avg.rate__avg %}0.0{% else %}{{ avg.rate__avg }}{% endif %}</a>({{ count.rate__count }})</div>
+            </div>
+            <div id="info_structure">
+                <ul class="info_ul">
+                    <hr width="620px;" color="black" size="5" style="margin-left:19pt;">
+                    <li style="float:left;">
+                        <ul class="poli_info">
+                            <li class="poli_info_li">
+                                <div class="poli_info_title">이름</div>
+                                <div class="poli_info_content" id="politic_name">{{ politic.poli_nm }}</div>
+                            </li>
+                            <li class="poli_info_li">
+                                <div class="poli_info_title">출생</div>
+                                <div class="poli_info_content">{{ politic.birth }}</div>
+                            </li>
+                            <li class="poli_info_li">
+                                <div class="poli_info_title">선거구</div>
+                                <div class="poli_info_content">{{ politic.poli_ch_nm }}</div>
+                            </li>
+                            <li class="poli_info_li">
+                                <div class="poli_info_title">정당</div>
+                                <div class="poli_info_content">{{ politic.party_af }}</div>
+                            </li>
+                        </ul>
+                    </li>
+                    <li style="float:left; margin-left:15pt;">
+                        <ul>
+                            <li style="height:100%; list-style:none;">
+                                <div class="poli_info_title">경력</div>
+                                <div class="poli_info_career" id="longtext">{{ politic.career | linebreaksbr }}</div>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div style="float:bottom;">
+            <hr width="100%" color="black" size="5" >
+            <div style="width:100%;">
+                <div style="float:left;">한줄평</div>
+                <form id="choiceForm" method="post" style="float:left; margin-left:5pt;">
+                    {% csrf_token %}
+                    <select name="choice" id="choice">
+                        <option value="new">최신순</option>
+                        <option value="most_like">당선순</option>
+                        <option value="most_dislike">낙선순</option>
+                    </select>
+                </form>
+                <!-- Button trigger modal -->
+                <button type="button" class="btn btn" id="rate_button" data-bs-toggle="modal" data-bs-target="#exampleModal" style="float:right; color:white;
+                    {% if politic.party_af == '국민의힘' %}
+                        background-color: #C55050;
+                    {% else %}
+                        background-color: #4543B8;
+                    {% endif %} margin-top:-5pt;"
+                        {% if not request.session.authUser %}disabled {% else %} {% endif %}>
+                  평점 남기기
+                </button>
+                <!-- Modal -->
+                <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                  <div class="modal-dialog modal-dialog-centered"  style="width:100%;">
+                    <div class="modal-content">
+                      <div class="" style="text-align: center;">
+                          <h3 style="">평점 남기기</h3>
+                      </div>
+                        <form method="POST">
+                            {% csrf_token %}
+                          <div class="modal-body">
+                              <a style="color: red; font-size:8pt;">타인의 권리를 침해하거나 명예를 훼손하는 게시물은 관련 법률에 의해 제재를 받을 수 있습니다.</a>
+                              <br>
+                              <a style="color: red; font-size:8pt;">문제의 소지가 될만한 평가에 대해서는 예고 없이 삭제 될 수 있음을 알립니다.</a>
+                              <br>
+                              <a style="font-size:15pt;">정치인</a>
+                              <br>
+                              <input style="font-size:10pt; background-color: white; border:none;" type="text" name="politic_name" value="{{ politic.poli_nm }}" disabled>
+                              <br>
+                              <br>
+                              <div class="mb-3">
+                                    <label for="message-text" class="col-form-label" style="font-size:15pt;">한줄평:</label>
+                                    <textarea class="form-control" id="message-text" name="text_msg"></textarea>
+                                    <span style="color:#aaa; float:right; color:black;" id="counter">(0 / 최대 70자)</span>
+                              </div>
+                              <div class="star-rating">
+                                  <input type="radio" id="5-stars" name="rating" value="5" />
+                                  <label for="5-stars" class="star">&#9733;</label>
+                                  <input type="radio" id="4-stars" name="rating" value="4" />
+                                  <label for="4-stars" class="star">&#9733;</label>
+                                  <input type="radio" id="3-stars" name="rating" value="3" />
+                                  <label for="3-stars" class="star">&#9733;</label>
+                                  <input type="radio" id="2-stars" name="rating" value="2" />
+                                  <label for="2-stars" class="star">&#9733;</label>
+                                  <input type="radio" id="1-star" name="rating" value="1" checked/>
+                                  <label for="1-star" class="star">&#9733;</label>
+                              </div>
+                            </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+                        <button type="submit" class="btn btn-primary">저장</button>
+                      </div>
+                        </form>
+                    </div>
+                  </div>
+                </div>
+            </div>
+             <div id="rating" style="position:static;">
+                  <table class="table">
+                      {% if politic_list %}
+                            {% for c in politic_list %}
+                                <tr>
+                                      <td>
+                                          <a style="font-size:13pt;"><strong>{{ c.user_nk.nickname }}</strong></a>
+                                          <a style="font-size:11pt; margin-left:5pt;" id="create_date">{{ c.create | date:'Y-m-d H:i' }}</a>
+                                          <a style="font-size:11pt; margin-left:5pt;">신고</a>
+                                          {% if c.user_nk.nickname ==  request.session.authUser.nickname %}
+                                            <a class="delete" href="{{ c.rate_num }}/delete/" style="font-size:11pt; margin-left:5pt; text-decoration:none; color:black">| 삭제</a>
+                                          {% endif %}
+                                          <span id="dislike_count" class="{{ c.rate_num }}" style="float:right; margin-top:10pt;">{{ c.dislike.count }}</span>
+                                          <input type="image" class="{{ c.rate_num }}" onclick="review_dislike(this.className)" name="dislike"
+                                                 src="
+                                                 {% if politic.party_af == '국민의힘' %}
+                                                     {% static 'media/blue_down.png' %}
+                                                 {% else %}
+                                                     {% static 'media/red_down.png' %}
+                                                 {% endif %}
+                                                    " width="50" height="50" style="float:right; margin-left:5pt;">
+                                          <span id="like_count" class="{{ c.rate_num }}" style="float:right; margin-top:10pt;">{{ c.like.count }}</span>
+                                          <input type="image" class="{{ c.rate_num }}" onclick="review_like(this.className)" name="like"
+                                                 src="
+                                                 {% if politic.party_af == '국민의힘' %}
+                                                     {% static 'media/red_up.png' %}
+                                                 {% else %}
+                                                     {% static 'media/blue_up.png' %}
+                                                 {% endif %}
+                                                    " width="50" height="50" style="float:right;">
+                                            <div class="{{ c.rate_num }}" id='toast'  style='display:none'>
+                                                <div class="{{ c.rate_num }}" id="message"></div>
+                                            </div>
+                                          <br>
+                                          <div class="star-ratings" id="user_ratings">
+                                              <div class="star-ratings-fill space-x-2 text-lg" id="user_ratings_fill" style="width:{{ c.rate | mul:20}}%">
+                                                <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
+                                              </div>
+                                              <div class="star-ratings-base space-x-2 text-lg" id="user_ratings_base">
+                                                <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
+                                              </div>
+                                          </div>
+                                          <div style="position:relative; font-size:9pt; margin-top:3pt;">
+                                              <a id="rate"> {% if not c.rate %} 0 {% else %} {{ c.rate }} {% endif %}</a>
+                                          </div>
+                                          <br>
+                                          <div style="font-size:13pt; margin-top:-15pt;">{{ c.review }}</div>
+                                      </td>
+                                </tr>
+                            {% endfor %}
+                      {% endif %}
+                  </table>
+             </div>
+            {% if politic_list %}
+                <div id="pagination_structure" style="">
+                    <div class="pagination">
+                        <div style="margin: 5px;">
+                        {% if politic_list.has_previous %}
+                            <a class="abutton" href="?page=1">처음</a>
+                            <a class="abutton" href="?page={{ politic_list.previous_page_number }}">이전</a>
+                        {% endif %}
+                        </div>
+
+                        <div style="margin: 5px;">
+                        {% for page in politic_list.paginator.page_range %}
+                            {% if page >= politic_list.number|add:-2 and page <= politic_list.number|add:2 %}
+                            <span class="{% if page == politic_list.number %}current{% else %}base{% endif %}">
+                                <a href="?page={{ page }}" class="{% if page == politic_list.number %}current{% else %}base{% endif %}">{{ page }}</a>
+                            </span>
+                            {% elif page >= politic_list.number|add:-3 and page <= politic_list.number|add:3 %}
+                                ..
+                            {% endif %}
+                        {% endfor %}
+                        </div>
+
+                        <div style="margin: 5px;">
+                        {% if politic_list.has_next %}
+                            <a class="abutton" href="?page={{ politic_list.next_page_number }}">다음</a>
+                            <a class="abutton" href="?page={{ politic_list.paginator.num_pages }}">끝</a>
+                        {% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

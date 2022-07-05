@@ -1,0 +1,58 @@
+.form-check{
+    display:none;
+}
+
+.my_page_btn{
+    width:35pt;
+    height: 22pt;
+    background-color:#6B049C;
+    color:white;
+    border:none;
+}
+
+#nickname_btn{
+    width:35pt;
+    height: 22pt;
+    background-color:#6B049C;
+    color:white;
+    border:none;
+}
+
+.my_page_btn[disabled]{
+    background-color:#EBE4FE;
+    color:gray;
+    border:1px solid gray;
+}
+
+td{
+    width:500px;
+}
+
+.error_message{
+    font-size:10pt;
+}
+
+.guid_msg{
+    font-size:10pt;
+}
+
+.table{
+    border-top:1px solid black;
+}
+
+.form-check{
+    float:left;
+}
+
+#guid_like{
+    float:left;
+}
+
+.menu:hover{
+    color:#FAFF00;
+}
+
+.menu{
+    text-decoration-line:none;
+    color:white;
+}

@@ -1,0 +1,65 @@
+#pagination_structure{
+    position:relative;
+    display:flex;
+    text-align:center;
+    width:100%;
+}
+
+.pagination a {
+    text-decoration: none;
+    text-align: center;
+}
+
+.pagination { /* 페이지 버튼 */
+    position:relative;
+    text-align:center;
+    margin:0 auto;
+}
+
+.current { /* 현재 페이지 */
+    font-weight: bold;
+}
+
+.base{ /* 그 외 페이지 */
+    color:black;
+}
+
+.abutton { /* 버튼 기본 색 */
+    color: black;
+    font-size: small;
+}
+
+.reply_submit{
+    border:1px solid #c6c6c6;
+    width:40pt;
+    height:45pt;
+    float:right;
+    margin-top:-45pt;
+    margin-right:5pt;
+
+}
+
+.basic:hover{
+    color:white;
+}
+
+#top-structure{
+    min-height:60pt;
+    overflow:hidden;
+    border-top:1px solid black;
+    border-bottom:1px dashed black;
+}
+
+.counter{
+    font-size:12pt;
+    color:#aaa;
+    float:right;
+    color:black;
+    margin-right:45pt;
+}
+
+.form-control{
+    width:85%;
+    margin-left:auto;
+    margin-right:auto;
+}

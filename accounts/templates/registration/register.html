@@ -1,0 +1,125 @@
+{% extends 'base.html' %}
+{% block title %}- 회원가입{% endblock %}
+{% block color %}
+#4B4B4B;
+{% endblock %}
+{% block script %}
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
+
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/register_style.css' %}">
+<script type="text/javascript" src="{% static 'js/register.js' %}"></script>
+
+<style>
+    .check_img{
+        content:url('{% static 'media/check.png' %}');
+    }
+
+    .wrong_check_img{
+        content:url('{% static 'media/no_check.png' %}');
+    }
+</style>
+<script>
+
+
+</script>
+{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="panel panel-default">
+            <div class="alert alert-info" style="background-color:#EFDAF7; border:none;">회원가입
+                <br>
+                <a style="font-size:10pt; color:red;">*는 필수입력 항목입니다.</a>
+            </div>
+            <form id="join-form" name="joinForm" action="" method="post">
+                {% csrf_token %}
+                <table class="table">
+                    <tbody>
+                        <tr>
+                            <th>아이디<a class="necessary_val">*</a></th>
+                            <td>
+                                <input id="user_id" name="user_id" type="text" value="" class="check" placeholder="아이디를 입력해주세요.">
+                                <img id="img_user_id" class="check_img" src="">
+                                <img id="wrong_img_user_id" class="wrong_check_img" src="">
+                                <span id="message_user_id" class="error_message"></span>
+                                <div class="guid_msg">아이디는 4~12자 사이의 영문 소문자와 숫자만 가능합니다.</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>닉네임<a class="necessary_val">*</a></th>
+                            <td>
+                                <input id="nickname" name="nickname" type="text" value="" class="check" placeholder="닉네임을 입력해주세요.">
+                                <img id="img_nickname" class="check_img" src="">
+                                <img id="wrong_img_nickname" class="wrong_check_img" src="">
+                                <span id="message_nickname" class="error_message"></span>
+                                <div class="guid_msg">닉네임은 2~10자 이내의 한글, 영문, 숫자로 이루어져야합니다.</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>이메일<a class="necessary_val">*</a></th>
+                            <td>
+                                <input id="email" name="email" type="text" value="" class="check" placeholder="이메일을 입력해주세요.">
+                                <img id="img_email" class="check_img" src="">
+                                <img id="wrong_img_email" class="wrong_check_img" src="">
+                                <input class="btn btn-primary" id="check_email" type="button" value="이메일 인증" style="display:none; background-color:#6B049C; border:none; color:white;">
+
+                                <input id="random_number" type="text" placeholder="번호를 입력해주세요." style="display:none;">
+                                <span id="pass_number" style="display:none;">이메일 인증이 완료되었습니다.</span>
+                                <span id="time_notice" class="guid_msg" style="display:none;">다시 인증번호를 생성하세요</span>
+                                <input class="btn btn-primary" id="check_number" type="button" value="인증번호 확인" style="display:none; background-color:#6B049C; border:none; color:white;">
+                                <div id="limit_time" style="display:none;"></div>
+
+                                <span id="message_email" class="error_message"></span>
+                                <div class="guid_msg" style="color: red; font-size:12pt;">네이버 이메일만 가능합니다.</div>
+                                <div class="guid_msg">이메일 인증은 필수 입니다. 이메일은 아이디나 비밀번호 찾기 등으로 사용됩니다.</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>정치성향<a class="necessary_val">*</a></th>
+                            <td>
+                                <div class="form-check form-check-inline">
+                                  <input class="form-check-input" type="radio" name="like" id="inlineRadio1" value="l" style="background-color:red;">
+                                  <label class="form-check-label" for="inlineRadio1">진보</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                  <input class="form-check-input" type="radio" name="like" id="inlineRadio2" value="c" style="background-color:black;" checked="checked">
+                                  <label class="form-check-label" for="inlineRadio2">중도</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                  <input class="form-check-input" type="radio" name="like" id="inlineRadio3" value="r" style="background-color:blue;">
+                                  <label class="form-check-label" for="inlineRadio3">보수</label>
+                                </div>
+                                <div class="guid_msg">정치 성향은 성향별 게시판 이용시 유저 구분에 사용됩니다. 기본은 중도입니다.</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>비밀번호<a class="necessary_val">*</a></th>
+                            <td>
+                                <input id="password" name="password" type="password" value="">
+                                <img id="img_password" class="check_img" src="">
+                                <img id="wrong_img_password" class="wrong_check_img" src="">
+                                <span id="message_pw" class="error_message"></span>
+                                <div class="guid_msg">8~20자(영문, 숫자, 특수문자)로 이루어져야합니다.</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>비밀번호 확인<a class="necessary_val">*</a></th>
+                            <td>
+                                <input id="password2" name="password2" type="password" value="">
+                                <img id="img_password2" class="check_img" src="">
+                                <img id="wrong_img_password2" class="wrong_check_img" src="">
+                                <span id="message_pw2" class="error_message"></span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <input class="btn btn-primary" id="join-submit" type="submit" value="등록" style="background-color:#6B049C; border:none; color:white;"
+                       check_result_user_id="fail" check_result_nickname="fail" check_result_email="fail"
+                       check_result_password="fail" check_result_number="fail">
+            </form>
+        </div>
+    </div>
+{% endblock %}

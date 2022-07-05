@@ -1,0 +1,221 @@
+{% extends 'base.html' %}
+{% block title %}- 찾기{% endblock %}
+{% block color %}
+#4B4B4B;
+{% endblock %}
+{% block script %}
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/main_page_style.css' %}">
+    <script>
+        $(function(){
+            $('.content_img img').hide() //이미지 태그 안보이게
+        })
+    </script>
+    <style>
+        .star-ratings { /* 별점 */
+          float:left;
+          color: #aaa9a9;
+          position: relative;
+          unicode-bidi: bidi-override;
+          width:max-content;
+          font-size:1.3em;
+          padding:0.0em;
+          margin-top:2.5pt;
+          -webkit-text-fill-color: transparent; /* Will override color (regardless of order) */
+          -webkit-text-stroke-width: 0.5px;
+          -webkit-text-stroke-color: #2b2a29;
+        }
+
+        .star-ratings-fill { /* 별점 */
+          color: #fff58c;
+          padding: 0.0em;
+          position: absolute;
+          z-index: 1;
+          display: flex;
+          top: 0;
+          left: 0;
+          overflow: hidden;
+          font-size:1.3rem;
+          -webkit-text-fill-color: gold;
+        }
+
+        .star-ratings-base {
+          z-index: 0;
+          padding: 0;
+        }
+        .politic_img{ /* 정치인 이미지 */
+            float:left;
+            margin-left:13pt;
+            margin-top:3pt;
+        }
+
+        #politic_nm{ /* 정치인 이름 */
+            float:right;
+            margin-top:4pt;
+        }
+
+        #avg_rate{ /* 별점 평균 */
+            float:left;
+            margin-top:4pt;
+            margin-left:3pt;
+        }
+
+        .pagination_structure{
+            position:relative;
+            display:flex;
+            text-align:center;
+            width:100%;
+        }
+
+        .pagination a {
+            text-decoration: none;
+            text-align: center;
+
+        }
+
+        .pagination { /* 페이지 버튼 */
+            position:relative;
+            text-align:center;
+            margin:0 auto;
+
+        }
+
+        .current { /* 현재 페이지 */
+            font-weight: bold;
+            color: violet;
+        }
+
+        .abutton{
+            color:black;
+        }
+        .base{
+            color:black;
+        }
+        .content_img{
+            text-decoration: none;
+            font-size:12pt;
+            max-width: 780px;
+            display: block;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            text-decoration:none;
+            color:black;
+        }
+    </style>
+{% endblock %}
+{% block content %}
+{% load mathfilters %}
+<div style="min-width:100%;">
+    <div style="float:left; min-width:100%;">
+        <h5>{{ keyword }}의 검색 결과입니다.</h5>
+        <div style="padding:10pt; overflow:auto; height:auto; border-bottom: dashed 1px black;">
+            <h3>정치인 정보</h3>
+            <h6>관련 5개 항목만 노출됩니다.</h6>
+            {% if politic %}
+                {% for c in politic %}
+                    <div class="politic_img">
+                        <a href="{{ c.list.get_absolute_url }}">
+                            <img src="{{ c.list.img_link }}" width="140" height="180">
+                        </a>
+                        <br>
+                        <div class="star-ratings">
+                            <div class="star-ratings-fill space-x-2 text-lg" style="width:{% if not c.avg.rate__avg %}0{% else %}{{ c.avg.rate__avg | mul:20}}{% endif %}%">
+                                <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
+                            </div>
+                            <div class="star-ratings-base space-x-2 text-lg">
+                                <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
+                            </div>
+                        </div>
+                        <a id="avg_rate">({% if not c.avg.rate__avg %}0.0{% else %}{{ c.avg.rate__avg }}{% endif %})</a>
+                        <br>
+                            <div id="politic_nm">{{ c.list.poli_nm }}</div>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+        <div style="border-bottom: dashed 1px black; min-width:100%">
+            <h3>게시판 정보</h3>
+            <ul style="margin-left: -10pt;">
+                {% if board %}
+                    {% for c in board %}
+                    <li style="list-style-type: none; margin-bottom:20pt;">
+                        <div>
+                            <a id="post_title">
+                                <a style="font-size:14pt;" href="/board/board_detail/{{ c.id }}?next={{ request.path }}">
+                                    {{ c.post_title }}
+                                </a>
+                                <a style="font-weight:bold;">&nbsp;[{{ c.reply_count }}] </a>
+                            </a>
+                        </div>
+                        <div>
+                            <a class="content_img" style="">{{ c.post_content | safe | truncatechars:60 }}</a>
+                        </div>
+                        <div style="margin-top:-10pt;">
+                            <a>{{ c.post_writer.nickname }} / </a>
+                            <a>{{ c.post_create | date:'Y-m-d H:i' }} / </a>
+                            <a>{% if c.board_id|slice:3 == 'opp' %}
+                                        {% if c.board_id|slice:'-2:' == 'ee' %}
+                                            [야당-자유]
+                                        {% elif c.board_id|slice:'-2:' == 'ic' %}
+                                            [야당-정치]
+                                        {% else %}
+                                            [야당-시사]
+                                        {% endif %}
+                                    {% elif c.board_id|slice:3 == 'fre' %}
+                                        {% if c.board_id|slice:'-2:' == 'ee' %}
+                                            [자유-자유]
+                                        {% elif c.board_id|slice:'-2:' == 'ic' %}
+                                            [자유-정치]
+                                        {% else %}
+                                            [자유-시사]
+                                        {% endif %}
+                                    {% else %}
+                                        {% if c.board_id|slice:'-2:' == 'ee' %}
+                                            [여당-자유]
+                                        {% elif c.board_id|slice:'-2:' == 'ic' %}
+                                            [여당-정치]
+                                        {% else %}
+                                            [여당-시사]
+                                        {% endif %}
+                                    {% endif %}</a>
+                        </div>
+                    </li>
+                    {% endfor %}
+                {% endif %}
+            </ul>
+            {% if board %}
+            <div class="pagination_structure">
+                <div class="pagination">
+                    <div style="margin: 5px;">
+                    {% if board.has_previous %}
+                        <a class="abutton" href="?page=1&search={{ keyword }}">처음</a>
+                        <a class="abutton" href="?page={{ board.previous_page_number }}&search={{ keyword }}">이전</a>
+                    {% endif %}
+                    </div>
+
+                    <div style="margin: 5px;">
+                    {% for page in board.paginator.page_range %}
+                        {% if page >= board.number|add:-2 and page <= board.number|add:2 %}
+                        <span class="{% if page == board.number %}current{% else %}base{% endif %}">
+                            <a href="?page={{ page }}&search={{ keyword }}" class="{% if page == board.number %}current{% else %}base{% endif %}">{{ page }}</a>
+                        </span>
+                        {% elif page >= board.number|add:-3 and page <= board.number|add:3 %}
+                            ..
+                        {% endif %}
+                    {% endfor %}
+                    </div>
+
+                    <div style="margin: 5px;">
+                    {% if board.has_next %}
+                        <a class="abutton" href="?page={{ board.next_page_number }}&search={{ keyword }}">다음</a>
+                        <a class="abutton" href="?page={{ board.paginator.num_pages }}&search={{ keyword }}">끝</a>
+                    {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

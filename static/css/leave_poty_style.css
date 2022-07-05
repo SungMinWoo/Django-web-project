@@ -1,0 +1,16 @@
+.red{
+    color:red;
+    text-decoration:none;
+}
+
+.table thead{
+    font-size:10pt;
+}
+
+#leave_submit{
+    float:right;
+    width:60pt;
+    height:22pt;
+    background-color:#6B049C;
+    color:#FFFEFE;
+}

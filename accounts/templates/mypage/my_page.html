@@ -1,0 +1,107 @@
+{% extends 'mypage.html' %}
+
+{% block script %}
+{% load static %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
+<link rel="stylesheet" href="{% static 'css/mypage_style.css' %}">
+<script type="text/javascript" src="{% static 'js/my_page.js' %}"></script>
+
+<style>
+    .check_img{
+        content:url('{% static 'media/check.png' %}');
+    }
+
+    .wrong_check_img{
+        content:url('{% static 'media/no_check.png' %}');
+    }
+</style>
+
+{% endblock %}
+{% block mypage_content %}
+    <h5>기본정보</h5>
+    <form method="POST" id="change-form">
+        {% csrf_token %}
+        <table class="table">
+            <tbody>
+                <tr>
+                    <th>아이디</th>
+                    <td>
+                        <a>{{ user_info.user_id }}</a>
+                    </td>
+                </tr>
+                <tr>
+                    <th>닉네임</th>
+                    <td>
+                        <a>{{ user_info.nickname }}</a>
+                        <input id="nickname_btn" class="change_value" type="button" value="수정">
+                        <br>
+                        <input id="nickname" name="nickname" type="text" value="" class="check" placeholder="닉네임을 입력해주세요." style="font-size:10pt;width:130pt;display:none;">
+                        <img id="img_nickname" class="check_img" style="display:none; width:10pt; height:10pt;">
+                        <img id="wrong_img_nickname" class="wrong_check_img" style="display:none; width:10pt; height:10pt;">
+                        <span id="message_nickname" class="error_message"></span>
+                        <div id="guid_nick" class="guid_msg" style="display:none;">닉네임은 2~10자 이내의 한글, 영문, 숫자로 이루어져야합니다.</div>
+
+                    </td>
+                </tr>
+                <tr>
+                    <th>정치성향</th>
+                    <td>
+                        <a id="like_info">{{ user_info.like }}</a>
+                        <br>
+                        <a style="font-size:10pt;">정치성향 저장 일시:
+                            <a id="like_date">{{ user_info.like_date }}</a>
+                        </a>
+                        <input id="like" class="my_page_btn" type="button" disabled="false" value="수정">
+                        <br>
+                        <a style="font-size:10pt;">정치 성향은 3개월에 한번 변경할 수 있습니다.</a>
+                        <br>
+                        <div class="form-check form-check-inline">
+                          <input class="form-check-input" type="radio" name="like" id="inlineRadio1" value="l" style="background-color:blue;">
+                          <label class="form-check-label" for="inlineRadio1">진보</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                          <input class="form-check-input" type="radio" name="like" id="inlineRadio2" value="c" style="background-color:black;">
+                          <label class="form-check-label" for="inlineRadio2">중도</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                          <input class="form-check-input" type="radio" name="like" id="inlineRadio3" value="r" style="background-color:red;">
+                          <label class="form-check-label" for="inlineRadio3">보수</label>
+                        </div>
+                        <div id="guid_like" class="guid_msg" style="display:none;">정치 성향은 6개월에 한번 변경할 수 있습니다.</div>
+                    </td>
+                </tr>
+                <tr>
+                    <th>이메일</th>
+                    <td>
+                        {{ user_info.email }}
+                    </td>
+                </tr>
+                <tr>
+                    <th>비밀번호 변경</th>
+                    <td>
+                        <input id="password" class="check" name="password" type="password" placeholder="이전 비밀번호">
+                        <img id="img_password" class="check_img" src="" style="display:none; width:10pt; height:10pt;">
+                        <img id="wrong_img_password" class="wrong_check_img" src="" style="width:10pt; height:10pt;">
+                        <span id="message_password" class="error_message"></span>
+
+                        <br>
+                        <input id="password1" class="check" name="password1" type="password" placeholder="새로운 비밀번호">
+                        <img id="img_password1" class="check_img" src="" style="display:none; width:10pt; height:10pt;">
+                        <img id="wrong_img_password1" class="wrong_check_img" src="" style="width:10pt; height:10pt;">
+                        <span id="message_pw1" class="error_message"></span>
+                        <div class="guid_msg">8~20자(영문, 숫자, 특수문자)로 이루어져야합니다.</div>
+
+                        <input id="password2" name="password2" type="password" placeholder="새로운 비밀번호 확인">
+                        <img id="img_password2" class="check_img" src="" style="display:none; width:10pt; height:10pt;">
+                        <img id="wrong_img_password2" class="wrong_check_img" src="" style="width:10pt; height:10pt;">
+                        <span id="message_pw2" class="error_message"></span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <input style="float:right;" class="my_page_btn" id="cancel_change" type="button" value="취소">
+        <input style="float:right; margin-right:5pt;" class="my_page_btn" id="fix_info_submit" type="submit" value="등록"
+               check_result_nickname="fail" check_result_password="fail" check_result_password2="fail" check_result_like="fail">
+    </form>
+{% endblock %}

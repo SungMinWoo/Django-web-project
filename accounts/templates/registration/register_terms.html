@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% block title %}- 약관동의{% endblock %}
+{% block color %}
+#4B4B4B;
+{% endblock %}
+{% block script %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/register_style.css' %}">
+<script type="text/javascript" src="{% static 'js/register_term.js' %}"></script>
+{% endblock %}
+{% block content %}
+    <div class="row">
+        <div class="panel panel-default" style="">
+            <div class="alert alert" style="background-color:#EFDAF7; height:50pt;">약관동의</div>
+            <form id="terms-form" name="termsForm" action="" method="post">
+                {% csrf_token %}
+                <table class="table">
+                    <tbody>
+                        <tr>
+                            <th>약관동의</th>
+                            <td>
+                                <fieldset>
+                                    <div style="overflow:scroll; width:500px; height:150px;" >
+                                        {{ term_service | safe }}
+                                    </div>
+                                    <input id="agree-prov" type="checkbox" name="agreeProv" value="y">
+                                    <label for="agree-prov">[필수] 이용약관에 동의합니다.</label>
+                                </fieldset>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>개인정보 수집 이용 동의</th>
+                            <td>
+                                <fieldset>
+                                    <div style="overflow:scroll; width:500px; height:150px;" >
+                                        {{ privacy_policy | safe }}
+                                    </div>
+                                    <input id="agree-prov2" type="checkbox" name="agreeProv" value="y">
+                                    <label for="agree-prov2">[필수] 개인정보 처리방침에 동의 합니다.</label>
+                                </fieldset>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th></th>
+                            <td>
+                                <input id="agree-age" type="checkbox" name="agreeProv" value="y">
+                                <label for="agree-age">[필수] 만 14세 이상입니다.</label>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div style="margin:10pt;">
+                    <input class="btn" type="submit" value="회원가입으로 이동" style="position:relative;float:right;background-color:#6B049C; color:#FFFEFE">
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,135 @@
+{% extends 'base.html' %}
+{% block title %}- 메인{% endblock %}
+{% block color %}
+#4B4B4B;
+{% endblock %}
+{% block script %}
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/main_page_style.css' %}">
+<style>
+</style>
+{% endblock %}
+{% block content %}
+{% load mathfilters %}
+<div>
+    <div>
+        <h5 class="board_title" style="">공지사항</h5><a id="notice_url" href="/board/notice">>더보기 </a>
+        <ul id="notice_ul" style="">
+            {% if notice %}
+                {% for c in notice %}
+                    <li>
+                        <div>
+                            <a href="/board/board_detail/{{ c.id }}?next={{ request.path }}" style="text-decoration:none; color:violet;">
+                                {{ c.post_title }} - {{ c.post_writer.nickname }}
+                            </a>
+                        </div>
+                    </li>
+                {% endfor %}
+            {% endif %}
+        </ul>
+    </div>
+    <div style="float:left; min-height:280px;">
+        <h5 class="board_title" style="color:red;">여당게시판 당선 5</h5>
+        <ul class="top_post_ul">
+            {% if board_rul_list %}
+                {% for c in board_rul_list %}
+                    <li style="{% if forloop.last %}
+                            border-bottom: none;
+                        {% else %}
+                            border-bottom: dashed 0.5px;
+                        {% endif %}">
+                        <a href="/board/board_detail/{{ c.id }}?next={{ request.path }}">
+                            <div class="post_title">
+                                {{ c.post_title }}
+                            </div>
+                            <div>&nbsp[{{ c.post_like.count | sub:c.post_dislike.count }}]</div>
+                            <div class="top_post_writer"">{{ c.post_writer.nickname }} | {{ c.board_id }}</div>
+                        </a>
+                    </li>
+                {% endfor %}
+            {% else %}
+            <a>아직 당선된 글이 없습니다!</a>
+            {% endif %}
+        </ul>
+    </div>
+    <div style="float:left; margin-left:5pt; min-height:280px;">
+        <h5 class="board_title" style="color:blue;">야당게시판 당선 5</h5>
+        <ul class="top_post_ul">
+            {% if board_oppo_list %}
+                {% for c in board_oppo_list %}
+                    <li style="{% if forloop.last %}
+                            border-bottom: none;
+                        {% else %}
+                            border-bottom: dashed 0.5px;
+                        {% endif %}">
+                        <a href="/board/board_detail/{{ c.id }}?next={{ request.path }}">
+                            <div class="post_title">
+                                {{ c.post_title }}
+                            </div>
+                            <div>&nbsp[{{ c.post_like.count | sub:c.post_dislike.count }}]</div>
+                            <div class="top_post_writer"">{{ c.post_writer.nickname }} | {{ c.board_id }}</div>
+                        </a>
+                    </li>
+                {% endfor %}
+            {% else %}
+            <a>아직 당선된 글이 없습니다!</a>
+            {% endif %}
+        </ul>
+    </div>
+    <div style="float:left;">
+        <h5 class="board_title">자유게시판 당선 5</h5>
+        <ul class="top_post_ul">
+            {% if board_free_list %}
+                {% for c in board_free_list %}
+                    <li style="{% if forloop.last %}
+                            border-bottom: none;
+                        {% else %}
+                            border-bottom: dashed 0.5px;
+                        {% endif %}">
+                        <a href="/board/board_detail/{{ c.id }}?next={{ request.path }}">
+                            <div class="post_title">
+                                {{ c.post_title }}
+                            </div>
+                            <div>&nbsp[{{ c.post_like.count | sub:c.post_dislike.count }}]</div>
+                            <div class="top_post_writer">{{ c.post_writer.nickname }} | {{ c.board_id }}</div>
+                        </a>
+                    </li>
+                {% endfor %}
+            {% else %}
+            <a>아직 당선된 글이 없습니다!</a>
+            {% endif %}
+        </ul>
+    </div>
+    <div id="politic_structure">
+        <h5 class="board_title">최근 정치인 평가</h5>
+        <ul>
+            {% if rating_list %}
+                {% for c in rating_list %}
+                <li style="{% if forloop.last %}
+                            border-bottom: none;
+                        {% else %}
+                            border-bottom: dashed 0.5px;
+                        {% endif %}">
+                    <a href="{{ c.politic.get_absolute_url }}">
+                        <div style="float:left;">정치인: {{ c.politic.poli_nm }}</div>
+                        <div style="position: static">
+                            <div class="star-ratings" id="user_ratings">
+                                <div class="star-ratings-fill space-x-2 text-lg" id="user_ratings_fill" style="width:{{ c.rate | mul:20 }}%">
+                                    <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
+                                </div>
+                                <div class="star-ratings-base space-x-2 text-lg" id="user_ratings_base">
+                                    <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
+                                </div>
+                            </div>
+                            <div>{{ c.rate }}.0 ({{ c.user_nk.nickname }})</div>
+                        </div>
+                        <br>
+                        <div id="politic_list_text">한줄평: {{ c.review }}</div>
+                    </a>
+                </li>
+                {% endfor %}
+            {% endif %}
+        </ul>
+    </div>
+</div>
+{% endblock %}

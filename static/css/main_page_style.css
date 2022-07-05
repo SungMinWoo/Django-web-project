@@ -1,0 +1,135 @@
+/* 정치인평가 */
+#politic_structure{
+    float:left;
+    margin-left:5pt;
+}
+
+#politic_structure ul{
+    width:430px;
+    border:1px solid;
+    list-style:none;
+}
+
+#politic_structure ul li{
+    width:100%;
+    margin-bottom:5pt;
+    margin-top:5pt;
+    margin-left:-18pt;
+}
+
+#politic_structure ul li a{
+    text-decoration:none;
+    color:black;
+}
+
+#politic_list_text{
+    display: block;
+    position:relative;
+    max-width:100%;
+    margin-top:-15pt;
+    white-space : nowrap;
+    text-overflow: ellipsis;
+    overflow:hidden;
+}
+
+.star-ratings {
+    float:left;
+    color: #aaa9a9;
+    position: relative;
+    unicode-bidi: bidi-override;
+    width:max-content;
+    font-size:0.8em;
+    padding:0.2em;
+    -webkit-text-fill-color: transparent;
+    -webkit-text-stroke-width: 0.5px;
+    -webkit-text-stroke-color: #2b2a29;
+}
+
+.star-ratings-fill {
+    color: #fff58c;
+    padding: 0.2em;
+    position: absolute;
+    z-index: 1;
+    display: flex;
+    top: 0;
+    left: 0;
+    overflow: hidden;
+    font-size:0.8rem;
+    -webkit-text-fill-color: gold;
+}
+
+.star-ratings-base {
+    z-index: 0;
+    padding: 0;
+}
+
+.board_title{
+    font-weight:900;
+}
+
+.post_title{
+    float:left;
+    display: block;
+    max-width:350px;
+    height:20px;
+    text-overflow:ellipsis;
+    overflow:hidden;
+    white-space:nowrap;
+}
+
+.top_post_ul{
+    width:430px;
+    border:1px solid;
+    list-style:none;
+}
+
+.top_post_ul li{
+    white-space:nowrap;
+    width:100%;
+    margin-left:-18pt;
+}
+
+.top_post_ul li a{
+    text-decoration:none;
+    color:black;
+}
+
+.top_post_writer{
+    margin-bottom:5pt;
+}
+
+#notice_url{
+    position:absolute;
+    margin-top:-23pt;
+    margin-left:65pt;
+    text-decoration:none;
+    color:black;
+}
+
+#notice_ul{
+    width:100%;
+    min-height:45px;
+    list-style:none;
+}
+
+#notice_ul li{
+    margin-bottom:5px;
+    white-space : nowrap;
+    width:100%;
+    margin-left:-18pt;
+}
+
+#notice_ul ll div{
+    display: block;
+    max-width:350px;
+    min-height:20px;
+    text-overflow:ellipsis;
+    overflow:hidden;
+    white-space:nowrap;
+    font-size:14pt;
+}
+
+#notice_ul ll div a{
+    text-decoration:none;
+    color:black;
+}

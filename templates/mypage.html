@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% block title %}- 마이페이지{% endblock %}
+{% block color %}
+    {% if request.session.authUser.like == '진보' %}
+        #4543B8;
+    {% elif request.session.authUser.like == '보수' %}
+        #C55050;
+    {% else %}
+        #4B4B4B;
+    {% endif %}
+{% endblock %}
+
+{% load static %}
+
+{% block script %}
+
+{% endblock %}
+
+{% block content %}
+    {% if session_error %}
+        <ul class="messages">
+            <script>alert("{{ session_error }}")</script>
+        <!--    로그인 상태일때 로그인 혹은 회원가입을 시도하면-->
+        </ul>
+    {% endif %}
+    <div style="margin:5pt;">
+        <h5>마이페이지</h5>
+        <div style="margin:5pt;">
+            <div style="float:left;">
+                <ul style="background-color:gray; color:white; list-style-type:none; width: 90pt; height: 200pt; padding-left:5pt; padding-top:10pt;">
+                    <li style="margin: 5px;">
+                        <a class="menu" href="/accounts/mypage">기본정보</a>
+                    </li>
+                    <li style="margin: 5px;">
+                        <a class="menu" href="/accounts/mypage/my-write">내가 쓴 글</a>
+                    </li>
+                    <li style="margin: 5px;">
+                        <a class="menu" href="/accounts/mypage/my-reply">내가 쓴 댓글</a>
+                    </li>
+                    <li style="margin: 5px;">
+                        <a class="menu" href="/accounts/mypage/leave-poty">회원탈퇴</a>
+                    </li>
+                </ul>
+            </div>
+            <div style="float:left; width:500pt; margin-left:10pt;margin-top:10px;">
+                {% block mypage_content %}
+                {% endblock %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

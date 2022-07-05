@@ -1,0 +1,173 @@
+/* 로고*/
+#img_btn{
+    background-color: #FFFEFE;
+    height: 85px;
+    width: 203px;
+    outline: 0;
+    border: 0;
+    padding-top:9px;
+}
+
+body{
+    margin:0;
+    padding:0;
+    min-width:1280px;
+}
+
+div.main-div{
+    position:relative;
+    max-width:1280px;
+    padding-left:200px;
+    margin:0 auto;
+}
+
+/* 메뉴바*/
+#main_navbar nav.navbar{
+    position: relative;
+    min-width: 1040px;
+    height: 40px;
+    white-space: nowrap;
+    margin:0 auto;
+}
+
+/* 마우스 올리면 색*/
+.menu_btn:hover{
+    color:#FAFF00;
+}
+
+.menu_btn{
+    color:white;
+    text-decoration-line : none;
+
+}
+
+#menu_bar ul li{
+    list-style-type: none;
+    float:left;
+}
+
+#menu_bar ul{
+    margin-left:-30px;
+}
+
+#menu_bar li{
+    height:20px;
+    margin-left:30px;
+}
+
+/* 유저 박스 */
+#user_box{
+    position:relative;
+    border: 1px solid;
+    width:195px;
+    height:120px;
+    margin-left:10px;
+    float:right;
+}
+
+.modal-open {
+    padding-right: 0px !important;
+}
+
+#user_box_login{
+    position:relative;
+    border:1px solid;
+    width:195px;
+    height:45px;
+    margin-left:10pt;
+    float:left;
+}
+
+#user_box_ul{
+    list-style: none;
+}
+
+#logout_link{
+    position:relative;
+    border: 1px solid;
+    background-color:#6B049C;
+    color:white;
+}
+/* 검색 구조물*/
+#search_structure{
+    position: relative;
+    margin-top: -5px;
+}
+
+/* 검색*/
+#search_box{
+    position: relative;
+    height: 25px;
+    font-size: 12px;
+}
+
+/* 검색 버튼*/
+#search_btn_img{
+    white-space: nowrap;
+}
+
+
+/* 기본 구조 1040*/
+#base_structure{
+    position:relative;
+    max-width:1280px;
+    overflow:hidden;
+    height:auto;
+    padding-top:10px;
+    margin:0 auto;
+}
+
+/* 메인 구조 1280*/
+#main_structure{
+    position:relative;
+    width: 100%
+    padding-top:150px;
+    padding-left:200px;
+    margin:0 auto;
+}
+
+/* 중앙 구조 */
+#center_structure{
+    position:relative;
+    overflow:hidden;
+    height:auto;
+    width:870px;
+    float:left;
+}
+
+/* 왼쪽 광고 */
+#left_ads{
+    position: relative;
+    border:1px solid;
+
+    margin-left:25px;
+    float:left;
+}
+
+/* 오른쪽 광고 */
+#right_ads{
+    position:relative;
+    border:1px solid;
+
+    margin-left:10pt;
+    margin-top: 10pt;
+    float:right;
+}
+
+#footer_structure{
+    width:100%;
+    background-color:#fafbfc;
+}
+#footer_info{
+    width: 850px;
+    margin:0 auto;
+    margin-top:10pt;
+    border-top:1px solid black;
+}
+#footer_info ul{
+    list-style:None;
+    padding-top:10pt;
+    padding-bottom:10pt;
+    padding-left:-10pt;
+    -webkit-padding-start:0px;
+}

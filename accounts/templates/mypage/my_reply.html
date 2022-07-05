@@ -1,0 +1,104 @@
+{% extends 'mypage.html' %}
+
+{% block script %}
+{% load static %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
+<link rel="stylesheet" href="{% static 'css/mywrite_style.css' %}">
+
+<style>
+    .current { /* 현재 페이지 */
+        font-weight: bold;
+        color:
+        {% if request.session.authUser.like == '진보' %}
+            #4543B8;
+        {% elif request.session.authUser.like == '보수' %}
+            #C55050;
+        {% else %}
+            #4B4B4B;
+        {% endif %}
+    }
+</style>
+
+{% endblock %}
+{% block mypage_content %}
+{% load mathfilters %}
+    <h5>내가 쓴 댓글</h5>
+    <table class="table" style="width:525pt;">
+        <tr>
+            <th>게시판</th>
+            <th>게시글 제목</th>
+            <th>댓글 내용</th>
+            <th>작성시간</th>
+            <th>추천</th>
+        </tr>
+        {% for a in reply %}
+            <tr>
+                <td style="min-width:25pt; text-align:center;">
+                    {% if a.reply_post.board_id|slice:3 == 'opp' %}
+                        {% if a.reply_post.board_id|slice:'-2:' == 'ee' %}
+                            야당-자유
+                        {% elif a.reply_post.board_id|slice:'-2:' == 'ic' %}
+                            야당-정치
+                        {% else %}
+                            야당-시사
+                        {% endif %}
+                    {% elif a.reply_post.board_id|slice:3 == 'fre' %}
+                        {% if a.reply_post.board_id|slice:'-2:' == 'ee' %}
+                            자유-자유
+                        {% elif a.reply_post.board_id|slice:'-2:' == 'ic' %}
+                            자유-정치
+                        {% else %}
+                            자유-시사
+                        {% endif %}
+                    {% else %}
+                        {% if a.reply_post.board_id|slice:'-2:' == 'ee' %}
+                            여당-자유
+                        {% elif a.reply_post.board_id|slice:'-2:' == 'ic' %}
+                            여당-정치
+                        {% else %}
+                            여당-시사
+                        {% endif %}
+                    {% endif %}
+                </td>
+                <td style="width:350pt; min-height:100pt;">
+                    <a id="reply_title" style=" text-decoration:none; color:black;" href="/board/board_detail/{{ a.reply_post.id }}?next={{ request.path }}" >
+                    {{ a.reply_post.post_title }}
+                    </a>
+                </td>
+                <td id="post_reply" style="">{{ a.reply_contents }}</td>
+                <td style="text-align:center;">{{ a.reply_create | date:'Y-m-d H:i' }}</td>
+                <td style="width:150pt; text-align:center;">{{ a.reply_like.count | sub:a.reply_dislike.count }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+    <div id="pagination_structure">
+        <div class="pagination">
+            <div style="margin: 5px;">
+            {% if reply.has_previous %}
+                <a class="abutton" href="?page=1">처음</a>
+                <a class="abutton" href="?page={{ reply.previous_page_number }}">이전</a>
+            {% endif %}
+            </div>
+
+            <div style="margin: 5px;">
+            {% for page in reply.paginator.page_range %}
+                {% if page >= reply.number|add:-2 and page <= reply.number|add:2 %}
+                <span class="{% if page == reply.number %}current{% else %}base{% endif %}">
+                    <a href="?page={{ page }}" class="{% if page == reply.number %}current{% else %}base{% endif %}">{{ page }}</a>
+                </span>
+                {% elif page >= reply.number|add:-3 and page <= reply.number|add:3 %}
+                    ..
+                {% endif %}
+            {% endfor %}
+            </div>
+
+            <div style="margin: 5px;">
+            {% if reply.has_next %}
+                <a class="abutton" href="?page={{ reply.next_page_number }}">다음</a>
+                <a class="abutton" href="?page={{ reply.paginator.num_pages }}">끝</a>
+            {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

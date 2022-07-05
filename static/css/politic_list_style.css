@@ -1,0 +1,90 @@
+.star-ratings { /* 별점 */
+  float:left;
+  color: #aaa9a9;
+  position: relative;
+  unicode-bidi: bidi-override;
+  width:max-content;
+  font-size:1.3em;
+  padding:0.0em;
+  margin-top:2.5pt;
+  -webkit-text-fill-color: transparent; /* Will override color (regardless of order) */
+  -webkit-text-stroke-width: 0.5px;
+  -webkit-text-stroke-color: #2b2a29;
+}
+
+.star-ratings-fill { /* 별점 */
+  color: #fff58c;
+  padding: 0.0em;
+  position: absolute;
+  z-index: 1;
+  display: flex;
+  top: 0;
+  left: 0;
+  overflow: hidden;
+  font-size:1.3rem;
+  -webkit-text-fill-color: gold;
+}
+
+.star-ratings-base {
+  z-index: 0;
+  padding: 0;
+}
+
+#main_politic_structure{ /* 메인 구조 */
+    position:relative;
+    float:left;
+    min-width:100%;
+    line-height:100%;
+}
+
+#top_politic_structure{ /* 상단 구조 */
+    height:20pt;
+}
+
+.politic_img{ /* 정치인 이미지 */
+    float:left;
+    margin-left:13pt;
+    margin-top:3pt;
+}
+
+#politic_nm{ /* 정치인 이름 */
+    float:right;
+    margin-top:4pt;
+}
+
+#avg_rate{ /* 별점 평균 */
+    float:left;
+    margin-top:4pt;
+    margin-left:3pt;
+}
+/* 페이지 버튼 */
+#pagination_structure{
+    position:relative;
+    display:flex;
+    text-align:center;
+    width:100%;
+}
+
+.pagination {
+    position:relative;
+    text-align:center;
+    margin:0 auto;
+}
+
+.pagination a {
+    text-decoration: none;
+    text-align: center;
+}
+
+.current { /* 현재 페이지 */
+    font-weight: bold;
+}
+
+.base{ /* 그 외 페이지 */
+    color:black;
+}
+
+.abutton { /* 버튼 기본 색 */
+    color: black;
+    font-size: small;
+}

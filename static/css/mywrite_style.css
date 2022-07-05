@@ -1,0 +1,84 @@
+td{
+    width:550px;
+    font-size:10pt;
+}
+
+.error_message{
+    font-size:10pt;
+}
+
+.guid_msg{
+    font-size:10pt;
+}
+
+.table{
+    border-top:1px solid black;
+}
+/* 댓글 */
+#reply_title{
+    max-width: 140px;
+    display:inline-block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    text-decoration:none;
+    color:black;
+}
+/* 댓글 */
+#post_reply{
+    max-width: 150px;
+    display:inline-block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    text-decoration:none;
+    color:black;
+}
+
+/* 글 */
+#post_title{
+    max-width: 200px;
+    display:inline-block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    text-decoration:none;
+    color:black;
+}
+
+/* 글 */
+#reply_count select.funTimes{
+    margin-top:-100pt;
+}
+
+.table tr th{
+    text-align:center;
+}
+
+/* 페이지 버튼 */
+#pagination_structure{
+    position:relative;
+    display:flex;
+    text-align:center;
+    width:100%;
+}
+
+.pagination {
+    position:relative;
+    text-align:center;
+    margin:0 auto;
+}
+
+.pagination a {
+    text-decoration: none;
+    text-align: center;
+}
+
+.menu:hover{
+    color:#FAFF00;
+}
+
+.menu{
+    text-decoration-line:none;
+    color:white;
+}

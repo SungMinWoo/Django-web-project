@@ -1,0 +1,251 @@
+{% extends 'base.html' %}
+{% block title %}- 정치 게시판{% endblock %}
+{% block color %}
+    {% if board_type|slice:2 == '여당' %}
+        #C55050;
+    {% elif board_type|slice:2 == '야당' %}
+        #4543B8;
+    {% else %}
+        #4B4B4B;
+    {% endif %}
+{% endblock %}
+{% block script %}
+<style>
+    .change_color{
+        border:none;
+        color:white;
+        background-color:{% if board_type|slice:2 == '여당' %}
+                    #C55050;
+                {% elif board_type|slice:2 == '야당' %}
+                    #4543B8;
+                {% else %}
+                    #4B4B4B;
+                {% endif %}
+    }
+    .current { /* 현재 페이지 */
+        font-weight: bold;
+        color:
+        {% if board_type|slice:2 == '여당' %}
+            red;
+        {% elif board_type|slice:2 == '야당' %}
+            blue;
+        {% else %}
+            violet;
+        {% endif %}
+    }
+</style>
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/board_style.css' %}">
+<script type="text/javascript" src="{% static 'js/board.js' %}"></script>
+
+{% endblock %}
+{% load mathfilters %}
+{% block content %}
+{% if messages %}
+    {% for message in messages %}
+        <div {% if message.tags %} class="alert alert-{{ message.tags }}"{% endif %}>{{ message }}</div>
+    {% endfor %}
+{% endif %}
+    <div style="margin:5pt;">
+        <h5 id="board_type" style="font-weight:bold;">{{ board_type }}</h5>
+<!--        게시판 이름 영어 url만들때 사용-->
+        <input type="hidden" name="{{ board_type_en }}" id="board_type_en">
+        {% if board_type == '공지사항' %}
+        <hr style="margin:1px;">
+        {% else %}
+        <nav class="navbar navbar-expand-lg" style="background-color:
+        {% if board_type|slice:2 == '여당' %}
+            #D47C7B;
+        {% elif board_type|slice:2 == '야당' %}
+            #7DA0F5;
+        {% else %}
+            #9C9C9C;
+        {% endif %}" id="board_bar">
+              <div class="container-fluid" style="position:relative">
+                  <nav id="board_menu_bar">
+                      <ul>
+                          <li><a class="board_menu_bar" id="free">자유게시판</a></li>
+                          <li><a class="board_menu_bar" id="politic" >정치</a></li>
+                          <li><a class="board_menu_bar" id="issue">시사º이슈</a></li>
+                      </ul>
+                </nav>
+              </div>
+            </nav>
+        {% endif %}
+        <div>
+            <table class="table">
+                <tr>
+                    <th>제목</th>
+                    <th>글쓴이</th>
+                    <th>작성시간</th>
+                    <th>조회수</th>
+                    <th>추천</th>
+                </tr>
+<!--                1페이지에만 적용-->
+                {% if board_type == '공지사항' %}
+                {% else %}
+                    {% if board_data.number == 1 %}
+                        {% if best_post %}
+                            {% for board in best_post %}
+                                <tr>
+                                    <td style="width: 450px;">
+                                        <a style="position:absolute; font-weight:bold; display:inline-block; color:
+                                            {% if board_type|slice:2 == '여당' %}
+                                                #C55050;
+                                            {% elif board_type|slice:2 == '야당' %}
+                                                #4543B8;
+                                            {% else %}
+                                                violet;
+                                            {% endif %}">{{ forloop.counter }}.</a>
+                                        <a id="best_title" style="" href="/board/board_detail/{{ board.id }}?next={{ request.path }}?page={{ board_data.number }}">
+                                        &nbsp&nbsp&nbsp{{ board.post_title }}
+                                            <a style="position:absolute; font-weight:bold; color:
+                                            {% if board_type|slice:2 == '여당' %}
+                                                #C55050;
+                                            {% elif board_type|slice:2 == '야당' %}
+                                                #4543B8;
+                                            {% else %}
+                                                violet;
+                                            {% endif %}">&nbsp;[{{ board.reply_count }}] </a>
+                                        </a>
+                                    </td>
+                                    <td class="board_data_td">{% if board.post_writer.nickname %}{{ board.post_writer.nickname }}{% else %}[탈퇴유저]{% endif %}</td>
+                                    <td class="board_data_td">{{ board.post_create | date:'Y-m-d H:i' }}</td>
+                                    <td class="board_data_td">{{ board.post_views }}</td>
+                                    <td class="board_data_td">{{ board.post_like.count | sub:board.post_dislike.count }}</td>
+                                </tr>
+                            {% endfor %}
+                        {% endif %}
+                    {% endif %}
+                {% endif %}
+                {% if search %}
+                    {% for board in board_data %}
+                        <tr>
+                            <td style="width: 450px;">
+                                <a id="post_title" href="/board/board_detail/{{ board.id }}?next={{ request.path }}?page={{ board_data.number }}&choice={{ choice }}&search={{ search }}">
+                                {{ board.post_title }}
+                                    <a style="position:absolute; font-weight:bold; color:
+                                    {% if board_type|slice:2 == '여당' %}
+                                        #C55050;
+                                    {% elif board_type|slice:2 == '야당' %}
+                                        #4543B8;
+                                    {% else %}
+                                        violet;
+                                    {% endif %}">&nbsp;[{{ board.reply_count }}] </a>
+                                </a>
+                            </td>
+                            <td class="board_data_td">{% if board.post_writer.nickname %}{{ board.post_writer.nickname }}{% else %}[탈퇴유저]{% endif %}</td>
+                            <td class="board_data_td">{{ board.post_create | date:'Y-m-d H:i' }}</td>
+                            <td class="board_data_td">{{ board.post_views }}</td>
+                            <td class="board_data_td">{{ board.post_like.count | sub:board.post_dislike.count }}</td>
+                        </tr>
+                    {% endfor %}
+                {% else %}
+                    {% for board in board_data %}
+                        <tr>
+                            <td style="width: 450px;">
+                                <a id="post_title" href="/board/board_detail/{{ board.id }}?next={{ request.path }}?page={{ board_data.number }}">
+                                {{ board.post_title }}
+                                    <a style="position:absolute; font-weight:bold; color:
+                                    {% if board_type|slice:2 == '여당' %}
+                                        #C55050;
+                                    {% elif board_type|slice:2 == '야당' %}
+                                        #4543B8;
+                                    {% else %}
+                                        violet;
+                                    {% endif %}">&nbsp;[{{ board.reply_count }}] </a>
+                                </a>
+                            </td>
+                            <td class="board_data_td">{% if board.post_writer.nickname %}{{ board.post_writer.nickname }}{% else %}[탈퇴유저]{% endif %}</td>
+                            <td class="board_data_td">{{ board.post_create | date:'Y-m-d H:i' }}</td>
+                            <td class="board_data_td">{{ board.post_views }}</td>
+                            <td class="board_data_td">{{ board.post_like.count | sub:board.post_dislike.count }}</td>
+                        </tr>
+                    {% endfor %}
+                {% endif %}
+            </table>
+            {% if board_type == '공지사항' %}
+            {% else %}
+            <a id="board_write" style="float:right;">
+                <button type="button" class="change_color" style="width:50pt; height:25pt;">글쓰기</button>
+            </a>
+            {% endif %}
+        </div>
+    </div>
+    {% if not search %}
+    <div id="pagination_structure">
+        <div class="pagination">
+            <div style="margin: 5px;">
+            {% if board_data.has_previous %}
+                <a class="abutton" href="?page=1">처음</a>
+                <a class="abutton" href="?page={{ board_data.previous_page_number }}">이전</a>
+            {% endif %}
+            </div>
+
+            <div style="margin: 5px;">
+            {% for page in board_data.paginator.page_range %}
+                {% if page >= board_data.number|add:-2 and page <= board_data.number|add:2 %}
+                <span class="{% if page == board_data.number %}current{% else %}base{% endif %}">
+                    <a href="?page={{ page }}" class="{% if page == board_data.number %}current{% else %}base{% endif %}">{{ page }}</a>
+                </span>
+                {% elif page >= board_data.number|add:-3 and page <= board_data.number|add:3 %}
+                    ..
+                {% endif %}
+            {% endfor %}
+            </div>
+
+            <div style="margin: 5px;">
+            {% if board_data.has_next %}
+                <a class="abutton" href="?page={{ board_data.next_page_number }}">다음</a>
+                <a class="abutton" href="?page={{ board_data.paginator.num_pages }}">끝</a>
+            {% endif %}
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    {% if search %}
+    <div id="pagination_structure">
+        <div class="pagination">
+            <div style="margin: 5px;">
+            {% if board_data.has_previous %}
+                <a class="abutton" href="?page=1&choice={{ choice }}&search={{ search }}">처음</a>
+                <a class="abutton" href="?page={{ board_data.previous_page_number }}&choice={{ choice }}&search={{ search }}">이전</a>
+            {% endif %}
+            </div>
+
+            <div style="margin: 5px;">
+            {% for page in board_data.paginator.page_range %}
+                {% if page >= board_data.number|add:-2 and page <= board_data.number|add:2 %}
+                <span class="{% if page == board_data.number %}current{% else %}base{% endif %}">
+                    <a href="?page={{ page }}&choice={{ choice }}&search={{ search }}" class="{% if page == board_data.number %}current{% else %}base{% endif %}">{{ page }}</a>
+                </span>
+                {% elif page >= board_data.number|add:-3 and page <= board_data.number|add:3 %}
+                    ..
+                {% endif %}
+            {% endfor %}
+            </div>
+
+            <div style="margin: 5px;">
+            {% if board_data.has_next %}
+                <a class="abutton" href="?page={{ board_data.next_page_number }}&choice={{ choice }}&search={{ search }}">다음</a>
+                <a class="abutton" href="?page={{ board_data.paginator.num_pages }}&choice={{ choice }}&search={{ search }}">끝</a>
+            {% endif %}
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    <div style="text-align:center;">
+        <form id="board_search" method="get" action="{% url 'board:post_search' board_type=board_type_en %}" style="">
+        <select name="choice">
+            <option value="title_content">제목+내용</option>
+            <option value="title">제목</option>
+            <option value="content">내용</option>
+            <option value="writer">작성자</option>
+        </select>
+        <input id="search_box" name="search" type="search" aria-label="Search" style="width:150pt;">
+        <button id="search_btn_img" type="submit" class="change_color" style="height:23pt;">
+            검색
+        </button>
+    </form>
+    </div>
+{% endblock %}
